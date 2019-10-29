@@ -1,2 +1,2 @@
 # java
-ДЗ по Java (geekbrains)
+Практические задания по Java (geekbrains)
