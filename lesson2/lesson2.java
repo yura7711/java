@@ -80,7 +80,8 @@ public class TaskTracker {
             if (taskArray[i] != null && taskArray[i].id == idTask) {
 
                 taskArray[i].setStatus(newStatus);
-                System.out.println("Задача с id=" + idTask + " успешно удалена");
+                System.out.println("Задача с id=" + idTask + " успешно изменена");
+                return;
             }
         }
     }
@@ -90,6 +91,7 @@ public class TaskTracker {
             if (taskArray[i] != null && taskArray[i].id == idTask) {
                 taskArray[i] = null;
                 System.out.println("Задача с id=" + idTask + " успешно удалена");
+                return;
             }
         }
     }
