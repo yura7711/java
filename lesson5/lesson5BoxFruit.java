@@ -67,14 +67,11 @@ public class Box<T extends Fruit> {
         if (!(obj instanceof Box)){
             return false;
         }
-        if (this.listFruit.size() != ((Box) obj).listFruit.size()){
-            return false;
-        }
-        else if (this.listFruit.size() == 0 && ((Box) obj).listFruit.size() == 0){
+
+        if (this.getWeight() == ((Box) obj).getWeight()){
             return true;
         }
-
-        return this.listFruit.get(0).getClass() == ((Box) obj).listFruit.get(0).getClass();
+        return false;
     }
 
     public void moveToAnotherBox(Box<T> newBox){
