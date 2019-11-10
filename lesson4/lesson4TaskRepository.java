@@ -58,6 +58,15 @@ public class Task {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Task)){
+            return false;
+        }
+        return this.id.equals(((Task)obj).getId());
+
+    }
 }
 
 package com.geekbrains.training.lesson4.repositories;
@@ -117,46 +126,41 @@ package com.geekbrains.training.lesson4.repositories;
 
 import com.geekbrains.training.lesson4.entities.Task;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class ArrayTaskRepository implements TaskRepository {
-    private Task[] taskArray;
+    private List<Task> taskList;
 
     public ArrayTaskRepository() {
-        this.taskArray = new Task[10];
-    }
-
-    private boolean isTaskExist(Task task) {
-        for (int i = 0; i < taskArray.length; i++) {
-            if (taskArray[i] != null && taskArray[i].getId().equals(task.getId()))
-                return true;
-        }
-        return false;
+        this.taskList = new ArrayList<>(10);
     }
 
     @Override
     public void addTask(Task newTask) {
-        if (isTaskExist(newTask)) {
+        if (taskList.contains(newTask)){
             throw new TaskIsExistsException(newTask.getId());
         }
 
-        for (int i = 0; i < taskArray.length; i++) {
-            if (taskArray[i] == null) {
-                taskArray[i] = newTask;
-                return;
-            }
+        if (taskList.size() > 10) {
+            throw new ArrayIsFullException();
         }
-        throw new ArrayIsFullException();
+        else{
+            taskList.add(newTask);
+        }
     }
 
     @Override
-    public Task[] getTaskArray() {
-        return taskArray;
+    public List<Task> getTaskArray() {
+        return taskList;
     }
 
     @Override
     public void updateTaskStatus(Long idTask, Task.Status newStatus){
-        for (int i = 0; i < taskArray.length; i++) {
-            if (taskArray[i] != null && taskArray[i].getId().equals(idTask) ) {
-                taskArray[i].setStatus(newStatus);
+        for (Task o : taskList) {
+            if (o.getId().equals(idTask)){
+                o.setStatus(newStatus);
                 return;
             }
         }
@@ -165,9 +169,11 @@ public class ArrayTaskRepository implements TaskRepository {
 
     @Override
     public void deleteTask(Long idTask) {
-        for (int i = 0; i < taskArray.length; i++) {
-            if (taskArray[i] != null && taskArray[i].getId().equals(idTask)) {
-                taskArray[i] = null;
+        Iterator<Task> iter = taskList.iterator();
+        while(iter.hasNext()){
+            Task tmpTask = iter.next();
+            if (tmpTask.getId().equals(idTask)){
+                iter.remove();
                 return;
             }
         }
@@ -176,9 +182,11 @@ public class ArrayTaskRepository implements TaskRepository {
 
     @Override
     public void deleteTask(String nameTask) {
-        for (int i = 0; i < taskArray.length; i++) {
-            if (taskArray[i] != null && taskArray[i].getName().equals(nameTask)) {
-                taskArray[i] = null;
+        Iterator<Task> iter = taskList.iterator();
+        while(iter.hasNext()){
+            Task tmpTask = iter.next();
+            if (tmpTask.getName().equals(nameTask)){
+                iter.remove();
                 return;
             }
         }
@@ -191,9 +199,11 @@ package com.geekbrains.training.lesson4.repositories;
 
 import com.geekbrains.training.lesson4.entities.Task;
 
+import java.util.List;
+
 public interface TaskRepository {
     void addTask(Task newTask);
-    Task[] getTaskArray();
+    List<Task> getTaskArray();
     void updateTaskStatus(Long idTask, Task.Status newStatus);
     void deleteTask(Long idTask);
     void deleteTask(String nameTask);
@@ -231,9 +241,6 @@ public class TaskService {
             System.out.println("Задача с id=" + newTask.getId() + " добавлена в массив");
         }
         catch (RepositoryExceptions e) {
-            System.out.println(e.getMessage());
-        }
-        catch (NullPointerException e){
             System.out.println(e.getMessage());
         }
     }
