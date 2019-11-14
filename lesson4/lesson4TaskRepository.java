@@ -2,16 +2,22 @@
 
 public class Task {
     public enum Status {
-        created("Создана"), inWork("В работе"), closed("Закрыта"), rejected("Отклонена");
+        created("Создана", 1), inWork("В работе", 2), closed("Закрыта", 3), rejected("Отклонена", 4);
 
         private String rusTitle;
+        private int priority;
 
-        Status(String rusTitle) {
+        Status(String rusTitle, int priority) {
             this.rusTitle = rusTitle;
+            this.priority = priority;
         }
 
         public String getRusTitle() {
             return rusTitle;
+        }
+
+        public int getPriority() {
+            return priority;
         }
     }
 
@@ -55,6 +61,10 @@ public class Task {
         return status.getRusTitle();
     }
 
+    public Status getEnumStatus() {
+        return status;
+    }
+
     public void setStatus(Status status) {
         this.status = status;
     }
@@ -67,6 +77,11 @@ public class Task {
         return this.id.equals(((Task)obj).getId());
 
     }
+
+    @Override
+    public String toString() {
+        return "id=" + id + " " + name + " Статус: " + status.getRusTitle();
+    }
 }
 
 package com.geekbrains.training.lesson4.repositories;
@@ -76,16 +91,6 @@ public class RepositoryExceptions extends RuntimeException {
         super(message);
     }
 }
-
-
-package com.geekbrains.training.lesson4.repositories;
-
-public class ArrayIsFullException extends RepositoryExceptions {
-    public ArrayIsFullException() {
-        super("Список задач заполнен");
-    }
-}
-
 
 package com.geekbrains.training.lesson4.repositories;
 
@@ -143,12 +148,7 @@ public class ArrayTaskRepository implements TaskRepository {
             throw new TaskIsExistsException(newTask.getId());
         }
 
-        if (taskList.size() > 10) {
-            throw new ArrayIsFullException();
-        }
-        else{
-            taskList.add(newTask);
-        }
+        taskList.add(newTask);
     }
 
     @Override
@@ -217,6 +217,10 @@ import com.geekbrains.training.lesson4.repositories.RepositoryExceptions;
 import com.geekbrains.training.lesson4.repositories.TaskRepository;
 import com.geekbrains.training.lesson4.entities.Task;
 
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 public class TaskService {
     private TaskRepository taskRepository = new ArrayTaskRepository();
 
@@ -274,53 +278,82 @@ public class TaskService {
             System.out.println(e.getMessage());
         }
     }
+
+    //Получение списка задач по выбранному статусу
+    public List<Task> getTaskByStatus(Task.Status status){
+        return taskRepository.getTaskArray().stream().filter(task-> task.getEnumStatus() == status).collect(Collectors.toList());
+    }
+
+    //Проверка наличия задачи с указанным ID
+    public boolean checkTaskById(Long id){
+        return taskRepository.getTaskArray().stream()
+                .filter(task-> task.getId().equals(id))
+                .collect(Collectors.toList()).size() > 0;
+    }
+
+    //Получение списка задач в отсортированном по статусу виде: открыта, в работе, закрыта
+    // (можете выбирать любой статус и любой порядок, главное чтобы было 3 разных статуса);
+    public List<Task> getSortTaskByStatus(){
+        return taskRepository.getTaskArray().stream()
+                .sorted((t1, t2) -> (t1.getEnumStatus().getPriority() - t2.getEnumStatus().getPriority()))
+                .collect(Collectors.toList());
+    }
+
+    //Подсчет количества задач по определенному статусу
+    public int getCountTaskByStatus(Task.Status status){
+        return taskRepository.getTaskArray().stream().filter(task-> task.getEnumStatus() == status).collect(Collectors.toList()).size();
+    }
 }
 
 
 package com.geekbrains.training.lesson4;
 
 import com.geekbrains.training.lesson4.entities.Task;
+import com.geekbrains.training.lesson4.repositories.TaskRepository;
 import com.geekbrains.training.lesson4.services.TaskService;
+
+import java.util.List;
 
 public class MainApp {
     public static void main(String[] args) {
         TaskService myTaskService = new TaskService();
 
         myTaskService.addTask(new Task(1L, "Выполнить обзвон Клиентов часть 1", "Иван", "Иван", "Выполнить обзвон Клиентов по списку (первая часть)"));
-
-        myTaskService.addTask(new Task(1L, "Выполнить обзвон Клиентов часть 1", "Иван", "Иван", "Выполнить обзвон Клиентов по списку (первая часть)"));
-
-        myTaskService.addTask(new Task(2L, "Выполнить обзвон Клиентов часть 2", "Иван", "Петя", "Выполнить обзвон Клиентов по списку (вторая часть)"));
-        myTaskService.addTask(new Task(3L, "Отправить письмо", "Митя", "Митя", "Предложить КП по интернету Клиенту 1"));
-        myTaskService.addTask(new Task(4L, "Сходить на встречу с Клиентом", "Митя", "Митя", "Обсудить КП по интернету"));
-        myTaskService.addTask(new Task(5L, "Выполнить обзвон Клиентов часть 3", "Иван", "Митя", "Выполнить обзвон Клиентов по списку (третья часть)"));
-
-        myTaskService.printTaskArray();
-
-        myTaskService.deleteTask(2L);
-        myTaskService.deleteTask(222L);
-
-        myTaskService.printTaskArray();
-
-        myTaskService.deleteTask("Отправить письмо");
-        myTaskService.deleteTask("Этой задачи нет в репозитории");
-
-        myTaskService.printTaskArray();
-
-        myTaskService.addTask(new Task(1L, "Покормить кота", "Таня", "Таня", "Покормить Мурзика"));
-
+        myTaskService.updateTaskStatus(1L, Task.Status.inWork);
+        myTaskService.addTask(new Task(2L, "Выполнить обзвон Клиентов часть 1", "Иван", "Иван", "Выполнить обзвон Клиентов по списку (первая часть)"));
+        myTaskService.addTask(new Task(3L, "Выполнить обзвон Клиентов часть 2", "Иван", "Петя", "Выполнить обзвон Клиентов по списку (вторая часть)"));
+        myTaskService.addTask(new Task(4L, "Отправить письмо", "Митя", "Митя", "Предложить КП по интернету Клиенту 1"));
+        myTaskService.addTask(new Task(5L, "Сходить на встречу с Клиентом", "Митя", "Митя", "Обсудить КП по интернету"));
+        myTaskService.addTask(new Task(6L, "Выполнить обзвон Клиентов часть 3", "Иван", "Митя", "Выполнить обзвон Клиентов по списку (третья часть)"));
+        myTaskService.addTask(new Task(7L, "Покормить кота", "Таня", "Таня", "Покормить Мурзика"));
         myTaskService.addTask(new Task(16L, "Оформить командировку", "Ольга", "Ольга", "Оформить командировку в Пермь"));
         myTaskService.updateTaskStatus(16L, Task.Status.inWork);
-        myTaskService.updateTaskStatus(166L, Task.Status.inWork);
-
         myTaskService.addTask(new Task(17L, "Создать домен", "Ольга", "Иван", "Создать новый домен для Клиента 2"));
         myTaskService.addTask(new Task(18L, "Заключить договор", "Таня", "Иван", "Заключить договор с Клиентом 3"));
         myTaskService.addTask(new Task(19L, "Расторгнуть договор", "Ольга", "Иван", "Расторгнуть договор с Клиентом 4"));
+        myTaskService.updateTaskStatus(19L, Task.Status.closed);
         myTaskService.addTask(new Task(20L, "Реализовать приостановление договоров", "Ольга", "Иван", "Реализовать визард приостановления договора"));
+        myTaskService.updateTaskStatus(20L, Task.Status.rejected);
         myTaskService.addTask(new Task(21L, "Оформить командировку", "Ольга", "Митя", "Оформить командировку в СПБ"));
-        myTaskService.addTask(new Task(2L, "Покормить кота", "Ольга", "Ольга", "Покормить Мурзика"));
-        myTaskService.addTask(new Task(3L, "Отправить письмо", "Митя", "Митя", "Предложить КП по интернету Клиенту 1"));
+        myTaskService.addTask(new Task(22L, "Покормить кота", "Ольга", "Ольга", "Покормить Мурзика"));
+        myTaskService.addTask(new Task(23L, "Отправить письмо", "Митя", "Митя", "Предложить КП по интернету Клиенту 1"));
 
-        myTaskService.printTaskArray();
+        System.out.println(">>>Получение списка задач по выбранному статусу");
+        for (Task o : myTaskService.getTaskByStatus(Task.Status.inWork)) {
+            System.out.println(o);
+        }
+
+        System.out.println(">>>Проверка наличия задачи с указанным ID");
+        System.out.println(myTaskService.checkTaskById(3L));
+
+        //Получение списка задач в отсортированном по статусу виде: открыта, в работе, закрыта
+        // (можете выбирать любой статус и любой порядок, главное чтобы было 3 разных статуса);
+        System.out.println(">>>Получение списка задач в отсортированном по статусу виде");
+        for (Task o : myTaskService.getSortTaskByStatus()) {
+            System.out.println(o);
+    }
+
+        System.out.println(">>>Подсчет количества задач по определенному статусу");
+        System.out.println(myTaskService.getCountTaskByStatus(Task.Status.created));
     }
 }
