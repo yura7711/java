@@ -1,6 +1,10 @@
 ﻿package com.geekbrains.training.lesson4.entities;
 
-public class Task {
+import java.io.Serializable;
+
+public class Task implements Serializable {
+    private static final long serialVersionUID = -277821547227621214L;
+
     public enum Status {
         created("Создана", 1), inWork("В работе", 2), closed("Закрыта", 3), rejected("Отклонена", 4);
 
@@ -19,6 +23,15 @@ public class Task {
         public int getPriority() {
             return priority;
         }
+
+        public static Status getStatusByRusName(String rusName){
+            for (Status status: Status.values()) {
+                if (status.getRusTitle().equals(rusName)){
+                    return status;
+                }
+            }
+            return null;
+        }
     }
 
     private Long id;
@@ -35,6 +48,15 @@ public class Task {
         this.executor = executor;
         this.description = description;
         this.status = Status.created;
+    }
+
+    public Task(Long id, String name, String author, String executor, String description, Status status) {
+        this.id = id;
+        this.name = name;
+        this.author = author;
+        this.executor = executor;
+        this.description = description;
+        this.status = status;
     }
 
     public Long getId() {
@@ -80,7 +102,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "id=" + id + " " + name + " Статус: " + status.getRusTitle();
+        return "***\nid=" + id + " " + name + "\nСтатус: " + status.getRusTitle() + "\nИсполнитель: " + executor + "\nАвтор: " + author + "\nОписание: " + description;
     }
 }
 
@@ -217,24 +239,20 @@ import com.geekbrains.training.lesson4.repositories.RepositoryExceptions;
 import com.geekbrains.training.lesson4.repositories.TaskRepository;
 import com.geekbrains.training.lesson4.entities.Task;
 
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class TaskService {
     private TaskRepository taskRepository = new ArrayTaskRepository();
+    String lineSeparator = System.getProperty("line.separator");
+    String separator = "&&";
 
     public void printTaskArray() {
         for (Task o : taskRepository.getTaskArray()) {
             if (o != null) {
-                System.out.println("--------------------------------");
-                System.out.println("Идентификатор задачи: " + o.getId());
-                System.out.println("Задача: " + o.getName());
-                System.out.println("Статус: " + o.getStatus());
-                System.out.println("Исполнитель: " + o.getExecutor());
-                System.out.println("Автор: " + o.getAuthor());
-                System.out.println("Описание: " + o.getDescription());
-                System.out.println("--------------------------------");
+                System.out.println(o);
             }
         }
     }
@@ -243,18 +261,16 @@ public class TaskService {
         try {
             taskRepository.addTask(newTask);
             System.out.println("Задача с id=" + newTask.getId() + " добавлена в массив");
-        }
-        catch (RepositoryExceptions e) {
+        } catch (RepositoryExceptions e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public void updateTaskStatus(Long idTask, Task.Status newStatus){
+    public void updateTaskStatus(Long idTask, Task.Status newStatus) {
         try {
             taskRepository.updateTaskStatus(idTask, newStatus);
             System.out.println("Задача с id=" + idTask + " успешно изменена");
-        }
-        catch (RepositoryExceptions e) {
+        } catch (RepositoryExceptions e) {
             System.out.println(e.getMessage());
         }
     }
@@ -263,8 +279,7 @@ public class TaskService {
         try {
             taskRepository.deleteTask(idTask);
             System.out.println("Задача с id=" + idTask + " успешно удалена");
-        }
-        catch (RepositoryExceptions e) {
+        } catch (RepositoryExceptions e) {
             System.out.println(e.getMessage());
         }
     }
@@ -273,35 +288,96 @@ public class TaskService {
         try {
             taskRepository.deleteTask(nameTask);
             System.out.println("Задача с именем \"" + nameTask + "\" успешно удалена");
-        }
-        catch (RepositoryExceptions e) {
+        } catch (RepositoryExceptions e) {
             System.out.println(e.getMessage());
         }
     }
 
     //Получение списка задач по выбранному статусу
-    public List<Task> getTaskByStatus(Task.Status status){
-        return taskRepository.getTaskArray().stream().filter(task-> task.getEnumStatus() == status).collect(Collectors.toList());
+    public List<Task> getTaskByStatus(Task.Status status) {
+        return taskRepository.getTaskArray().stream().filter(task -> task.getEnumStatus() == status).collect(Collectors.toList());
     }
 
     //Проверка наличия задачи с указанным ID
-    public boolean checkTaskById(Long id){
+    public boolean checkTaskById(Long id) {
         return taskRepository.getTaskArray().stream()
-                .filter(task-> task.getId().equals(id))
-                .collect(Collectors.toList()).size() > 0;
+                .filter(task -> task.getId().equals(id)).count() > 0;
     }
 
     //Получение списка задач в отсортированном по статусу виде: открыта, в работе, закрыта
     // (можете выбирать любой статус и любой порядок, главное чтобы было 3 разных статуса);
-    public List<Task> getSortTaskByStatus(){
+    public List<Task> getSortTaskByStatus() {
         return taskRepository.getTaskArray().stream()
                 .sorted((t1, t2) -> (t1.getEnumStatus().getPriority() - t2.getEnumStatus().getPriority()))
                 .collect(Collectors.toList());
     }
 
     //Подсчет количества задач по определенному статусу
-    public int getCountTaskByStatus(Task.Status status){
-        return taskRepository.getTaskArray().stream().filter(task-> task.getEnumStatus() == status).collect(Collectors.toList()).size();
+    public int getCountTaskByStatus(Task.Status status) {
+        return taskRepository.getTaskArray().stream().filter(task -> task.getEnumStatus() == status).collect(Collectors.toList()).size();
+    }
+
+    public List<Task> getAllTask() {
+        return taskRepository.getTaskArray();
+    }
+
+    //Заполнить список задач из файла
+    public List<Task> importTaskFromFile() {
+        List<Task> newList = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader("Task.txt"))) {
+            String line;
+            String[] params = new String[5];
+            while ((line = br.readLine()) != null) {
+                params = line.split(separator);
+                newList.add(new Task(Long.parseLong(params[0]), params[1], params[2], params[3], params[4], Task.Status.getStatusByRusName(params[5])));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return newList;
+    }
+
+    //Записать список задач в файл
+    public void exportTaskInFile(List<Task> listTask) {
+        try (PrintWriter pw = new PrintWriter("Task.txt")) {
+            for (Task task : listTask) {
+                pw.print(task.getId() + separator);
+                pw.print(task.getName() + separator);
+                pw.print(task.getAuthor() + separator);
+                pw.print(task.getExecutor() + separator);
+                pw.print(task.getDescription() + separator);
+                pw.print(task.getEnumStatus().getRusTitle());
+                pw.print(lineSeparator);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void exportTaskInFileSerialize(List<Task> listTask) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("TaskSerialize.txt"))) {
+            for (Task task : listTask) {
+                out.writeObject(task);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Task> importTaskFromFileSerialize() {
+        List<Task> newList = new ArrayList<>();
+
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("TaskSerialize.txt"))) {
+            Task taskIn;
+            while ((taskIn = (Task)in.readObject()) != null) {
+                newList.add(taskIn);
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return newList;
     }
 }
 
@@ -312,6 +388,7 @@ import com.geekbrains.training.lesson4.entities.Task;
 import com.geekbrains.training.lesson4.repositories.TaskRepository;
 import com.geekbrains.training.lesson4.services.TaskService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainApp {
@@ -351,9 +428,24 @@ public class MainApp {
         System.out.println(">>>Получение списка задач в отсортированном по статусу виде");
         for (Task o : myTaskService.getSortTaskByStatus()) {
             System.out.println(o);
-    }
+        }
 
         System.out.println(">>>Подсчет количества задач по определенному статусу");
         System.out.println(myTaskService.getCountTaskByStatus(Task.Status.created));
+
+        myTaskService.exportTaskInFile(myTaskService.getAllTask());
+        myTaskService.exportTaskInFileSerialize(myTaskService.getAllTask());
+
+        List<Task> importTasks = myTaskService.importTaskFromFile();
+
+        for (Task task: importTasks) {
+            System.out.println(task);
+        }
+
+        List<Task> importTasks2 = myTaskService.importTaskFromFileSerialize();
+
+        for (Task task: importTasks2) {
+            System.out.println("importTaskFromFileSerialize " + task);
+        }
     }
 }
