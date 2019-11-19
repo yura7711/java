@@ -1,4 +1,4 @@
-﻿package com.geekbrains.training.lesson4.entities;
+﻿package com.geekbrains.training.lesson10.entities;
 
 import java.io.Serializable;
 
@@ -6,12 +6,19 @@ public class Task implements Serializable {
     private static final long serialVersionUID = -277821547227621214L;
 
     public enum Status {
-        created("Создана", 1), inWork("В работе", 2), closed("Закрыта", 3), rejected("Отклонена", 4);
+        created(1,"Создана", 1)
+        , inWork(2,"В работе", 2)
+        , closed(3,"Закрыта", 3)
+        , rejected(4,"Отклонена", 4);
 
+
+
+        private int statusId;
         private String rusTitle;
         private int priority;
 
-        Status(String rusTitle, int priority) {
+        Status(int statusId, String rusTitle, int priority) {
+            this.statusId = statusId;
             this.rusTitle = rusTitle;
             this.priority = priority;
         }
@@ -24,9 +31,20 @@ public class Task implements Serializable {
             return priority;
         }
 
+        public int getStatusId() { return statusId; }
+
         public static Status getStatusByRusName(String rusName){
             for (Status status: Status.values()) {
                 if (status.getRusTitle().equals(rusName)){
+                    return status;
+                }
+            }
+            return null;
+        }
+
+        public static Status getStatusById(int statusId){
+            for (Status status: Status.values()) {
+                if (status.getStatusId() == statusId){
                     return status;
                 }
             }
@@ -106,7 +124,7 @@ public class Task implements Serializable {
     }
 }
 
-package com.geekbrains.training.lesson4.repositories;
+package com.geekbrains.training.lesson10.repositories;
 
 public class RepositoryExceptions extends RuntimeException {
     public RepositoryExceptions(String message) {
@@ -114,9 +132,9 @@ public class RepositoryExceptions extends RuntimeException {
     }
 }
 
-package com.geekbrains.training.lesson4.repositories;
+package com.geekbrains.training.lesson10.repositories;
 
-public class TaskIsExistsException extends RepositoryExceptions{
+public class TaskIsExistsException extends RepositoryExceptions {
     private Long taskId;
 
     public TaskIsExistsException(Long taskId) {
@@ -126,9 +144,9 @@ public class TaskIsExistsException extends RepositoryExceptions{
 }
 
 
-package com.geekbrains.training.lesson4.repositories;
+package com.geekbrains.training.lesson10.repositories;
 
-public class TaskNotDeletedException extends RepositoryExceptions{
+public class TaskNotDeletedException extends RepositoryExceptions {
     public TaskNotDeletedException(Long taskId) {
         super("Задача c id=" + taskId + " не была удалена");
     }
@@ -139,7 +157,7 @@ public class TaskNotDeletedException extends RepositoryExceptions{
 }
 
 
-package com.geekbrains.training.lesson4.repositories;
+package com.geekbrains.training.lesson10.repositories;
 
 public class TaskNotUpdatedException extends RepositoryExceptions {
     public TaskNotUpdatedException(Long taskId) {
@@ -149,9 +167,9 @@ public class TaskNotUpdatedException extends RepositoryExceptions {
 
 
 
-package com.geekbrains.training.lesson4.repositories;
+package com.geekbrains.training.lesson10.repositories;
 
-import com.geekbrains.training.lesson4.entities.Task;
+import com.geekbrains.training.lesson10.entities.Task;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -163,6 +181,16 @@ public class ArrayTaskRepository implements TaskRepository {
     public ArrayTaskRepository() {
         this.taskList = new ArrayList<>(10);
     }
+
+    @Override
+    public void connect(){
+
+    };
+
+    @Override
+    public void disconnect(){
+
+    };
 
     @Override
     public void addTask(Task newTask) {
@@ -217,13 +245,163 @@ public class ArrayTaskRepository implements TaskRepository {
 }
 
 
-package com.geekbrains.training.lesson4.repositories;
+package com.geekbrains.training.lesson10.repositories;
 
-import com.geekbrains.training.lesson4.entities.Task;
+import com.geekbrains.training.lesson10.entities.Task;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class OracleDBRepository implements TaskRepository {
+    private static Connection connection;
+    private static Statement stmt;
+    private static PreparedStatement preparedStatement;
+    private List<Task> taskList;
+
+    public OracleDBRepository() {
+        this.taskList = new ArrayList<>();
+    }
+
+    public void connect(){
+        try {
+            connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1522/orcle","training", "Qwerty123");
+            stmt = connection.createStatement();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void disconnect(){
+        try {
+            stmt.close();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        try {
+            preparedStatement.close();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        try {
+            connection.close();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void addTask(Task newTask) {
+        try {
+            preparedStatement = connection.prepareStatement("select 1 from tasks where task_id = ?");
+            preparedStatement.setLong(1, newTask.getId());
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()) {
+                if (rs.getInt(1) > 0){
+                    throw new TaskIsExistsException(newTask.getId());
+                }
+            }
+
+            preparedStatement = connection.prepareStatement("insert into tasks(task_id, task_name, author, executor, description, status_id) values(?, ?, ?, ?, ?, ?)");
+            preparedStatement.setLong(1, newTask.getId());
+            preparedStatement.setString(2, newTask.getName());
+            preparedStatement.setString(3, newTask.getAuthor());
+            preparedStatement.setString(4, newTask.getExecutor());
+            preparedStatement.setString(5, newTask.getDescription());
+            preparedStatement.setInt(6, newTask.getEnumStatus().getStatusId());
+            preparedStatement.execute();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<Task> getTaskArray() {
+        taskList.clear();
+
+        try {
+            ResultSet rs = stmt.executeQuery("select task_id, task_name, author, executor, description, status_id from tasks");
+            while(rs.next()) {
+                taskList.add(new Task(rs.getLong(1)
+                        , rs.getString(2)
+                        , rs.getString(3)
+                        , rs.getString(4)
+                        , rs.getString(5)
+                        , Task.Status.getStatusById(rs.getInt(6)))
+                );
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return taskList;
+    }
+
+    @Override
+    public void updateTaskStatus(Long idTask, Task.Status newStatus) {
+        try {
+            preparedStatement = connection.prepareStatement("update tasks set status_id = ? where task_id = ?");
+            preparedStatement.setInt(1, newStatus.getStatusId());
+            preparedStatement.setLong(2, idTask);
+
+            if (preparedStatement.executeUpdate() == 0){
+                throw new TaskNotUpdatedException(idTask);
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteTask(Long idTask) {
+        try {
+            preparedStatement = connection.prepareStatement("delete from tasks where task_id = ?");
+            preparedStatement.setLong(1, idTask);
+
+            if (preparedStatement.executeUpdate() == 0){
+                throw new TaskNotDeletedException(idTask);
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteTask(String nameTask) {
+        try {
+            preparedStatement = connection.prepareStatement("delete from tasks where task_name = ?");
+            preparedStatement.setString(1, nameTask);
+
+            if (preparedStatement.executeUpdate() == 0){
+                throw new TaskNotDeletedException(nameTask);
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+}
+
+
+package com.geekbrains.training.lesson10.repositories;
+
+import com.geekbrains.training.lesson10.entities.Task;
 
 import java.util.List;
 
 public interface TaskRepository {
+    void connect();
+    void disconnect();
     void addTask(Task newTask);
     List<Task> getTaskArray();
     void updateTaskStatus(Long idTask, Task.Status newStatus);
@@ -232,12 +410,13 @@ public interface TaskRepository {
 }
 
 
-package com.geekbrains.training.lesson4.services;
+package com.geekbrains.training.lesson10.services;
 
-import com.geekbrains.training.lesson4.repositories.ArrayTaskRepository;
-import com.geekbrains.training.lesson4.repositories.RepositoryExceptions;
-import com.geekbrains.training.lesson4.repositories.TaskRepository;
-import com.geekbrains.training.lesson4.entities.Task;
+import com.geekbrains.training.lesson10.repositories.ArrayTaskRepository;
+import com.geekbrains.training.lesson10.repositories.OracleDBRepository;
+import com.geekbrains.training.lesson10.repositories.RepositoryExceptions;
+import com.geekbrains.training.lesson10.repositories.TaskRepository;
+import com.geekbrains.training.lesson10.entities.Task;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -245,7 +424,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TaskService {
-    private TaskRepository taskRepository = new ArrayTaskRepository();
+    private TaskRepository taskRepository = new OracleDBRepository();
     String lineSeparator = System.getProperty("line.separator");
     String separator = "&&";
 
@@ -256,6 +435,14 @@ public class TaskService {
             }
         }
     }
+
+    public void connect(){
+        taskRepository.connect();
+    };
+
+    public void disconnect(){
+        taskRepository.disconnect();
+    };
 
     public void addTask(Task newTask) {
         try {
@@ -354,48 +541,25 @@ public class TaskService {
             e.printStackTrace();
         }
     }
-
-    public void exportTaskInFileSerialize(List<Task> listTask) {
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("TaskSerialize.txt"))) {
-            for (Task task : listTask) {
-                out.writeObject(task);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public List<Task> importTaskFromFileSerialize() {
-        List<Task> newList = new ArrayList<>();
-
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("TaskSerialize.txt"))) {
-            Task taskIn;
-            while ((taskIn = (Task)in.readObject()) != null) {
-                newList.add(taskIn);
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return newList;
-    }
 }
 
 
-package com.geekbrains.training.lesson4;
+package com.geekbrains.training.lesson10;
 
-import com.geekbrains.training.lesson4.entities.Task;
-import com.geekbrains.training.lesson4.repositories.TaskRepository;
-import com.geekbrains.training.lesson4.services.TaskService;
+import com.geekbrains.training.lesson10.entities.Task;
+import com.geekbrains.training.lesson10.repositories.TaskRepository;
+import com.geekbrains.training.lesson10.services.TaskService;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainApp {
     public static void main(String[] args) {
         TaskService myTaskService = new TaskService();
-
+        myTaskService.connect();
         myTaskService.addTask(new Task(1L, "Выполнить обзвон Клиентов часть 1", "Иван", "Иван", "Выполнить обзвон Клиентов по списку (первая часть)"));
+        myTaskService.addTask(new Task(1L, "Выполнить", "Иван", "Иван", "Выполнить"));
         myTaskService.updateTaskStatus(1L, Task.Status.inWork);
         myTaskService.addTask(new Task(2L, "Выполнить обзвон Клиентов часть 1", "Иван", "Иван", "Выполнить обзвон Клиентов по списку (первая часть)"));
         myTaskService.addTask(new Task(3L, "Выполнить обзвон Клиентов часть 2", "Иван", "Петя", "Выполнить обзвон Клиентов по списку (вторая часть)"));
@@ -414,6 +578,8 @@ public class MainApp {
         myTaskService.addTask(new Task(21L, "Оформить командировку", "Ольга", "Митя", "Оформить командировку в СПБ"));
         myTaskService.addTask(new Task(22L, "Покормить кота", "Ольга", "Ольга", "Покормить Мурзика"));
         myTaskService.addTask(new Task(23L, "Отправить письмо", "Митя", "Митя", "Предложить КП по интернету Клиенту 1"));
+        myTaskService.deleteTask(23L);
+        myTaskService.deleteTask("Отправить письмо");
 
         System.out.println(">>>Получение списка задач по выбранному статусу");
         for (Task o : myTaskService.getTaskByStatus(Task.Status.inWork)) {
@@ -434,7 +600,6 @@ public class MainApp {
         System.out.println(myTaskService.getCountTaskByStatus(Task.Status.created));
 
         myTaskService.exportTaskInFile(myTaskService.getAllTask());
-        myTaskService.exportTaskInFileSerialize(myTaskService.getAllTask());
 
         List<Task> importTasks = myTaskService.importTaskFromFile();
 
@@ -442,10 +607,7 @@ public class MainApp {
             System.out.println(task);
         }
 
-        List<Task> importTasks2 = myTaskService.importTaskFromFileSerialize();
-
-        for (Task task: importTasks2) {
-            System.out.println("importTaskFromFileSerialize " + task);
-        }
+        myTaskService.disconnect();
     }
 }
+
