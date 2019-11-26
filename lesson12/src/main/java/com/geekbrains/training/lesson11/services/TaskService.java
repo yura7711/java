@@ -1,15 +1,24 @@
 package com.geekbrains.training.lesson11.services;
 
-import com.geekbrains.training.lesson11.repositories.OracleDBRepository;
 import com.geekbrains.training.lesson11.repositories.RepositoryExceptions;
 import com.geekbrains.training.lesson11.repositories.TaskRepository;
 import com.geekbrains.training.lesson11.entities.Task;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class TaskService {
-    private TaskRepository taskRepository = new OracleDBRepository();
+    private TaskRepository taskRepository;
+
+    @Autowired
+    @Qualifier(value = "oracleDBRepository")
+    public void setTaskRepository(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
 
     public void printTaskArray() {
         for (Task o : taskRepository.getTaskArray()) {
@@ -18,10 +27,6 @@ public class TaskService {
             }
         }
     }
-
-    public void prepare(){
-        taskRepository.prepare();
-    };
 
     public void shutdown(){
         taskRepository.shutdown();
@@ -65,13 +70,12 @@ public class TaskService {
 
     //Получение списка задач по выбранному статусу
     public List<Task> getTaskByStatus(Task.Status status) {
-        return taskRepository.getTaskArray().stream().filter(task -> task.getEnumStatus() == status).collect(Collectors.toList());
+        return taskRepository.getTaskByStatus(status);
     }
 
     //Проверка наличия задачи с указанным ID
     public boolean checkTaskById(Long id) {
-        return taskRepository.getTaskArray().stream()
-                .filter(task -> task.getId().equals(id)).count() > 0;
+        return taskRepository.checkTaskById(id);
     }
 
     //Получение списка задач в отсортированном по статусу виде: открыта, в работе, закрыта
@@ -84,7 +88,7 @@ public class TaskService {
 
     //Подсчет количества задач по определенному статусу
     public int getCountTaskByStatus(Task.Status status) {
-        return taskRepository.getTaskArray().stream().filter(task -> task.getEnumStatus() == status).collect(Collectors.toList()).size();
+        return taskRepository.getCountTaskByStatus(status);
     }
 
     public List<Task> getAllTask() {
