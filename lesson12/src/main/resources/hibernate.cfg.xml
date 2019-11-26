@@ -5,8 +5,8 @@
 <hibernate-configuration>
     <session-factory>
         <property name="connection.driver_class">oracle.jdbc.OracleDriver</property>
-        <property name="connection.url">jdbc:oracle:thin:@localhost:1522/orcle</property>
-        <property name="connection.username">training</property>
+        <property name="connection.url">jdbc:oracle:thin:@localhost:1522/oracle12c</property>
+        <property name="connection.username">c##training</property>
         <property name="connection.password">Qwerty123</property>
         <property name="connection.pool_size">8</property>
         <property name="dialect">org.hibernate.dialect.Oracle12cDialect</property>

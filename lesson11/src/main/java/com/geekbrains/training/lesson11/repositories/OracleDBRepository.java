@@ -5,44 +5,27 @@ import com.geekbrains.training.lesson11.entities.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.springframework.stereotype.Repository;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
 public class OracleDBRepository implements TaskRepository {
     private static SessionFactory sessionFactory;
-    private static Session session;
+    private static Session session = null;
 
     public OracleDBRepository() {
     }
 
-    @PostConstruct
     public void prepare(){
         sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
         session = sessionFactory.getCurrentSession();
     }
 
-    @PreDestroy
     public void shutdown(){
         sessionFactory.close();
         if (session != null){
             session.close();
         }
-    }
-
-    //Проверка наличия задачи с указанным ID
-    @Override
-    public boolean checkTaskById(Long id) {
-        session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-        Task task = session.get(Task.class, id);
-        session.getTransaction().commit();
-
-        return task != null;
     }
 
     @Override
@@ -129,23 +112,5 @@ public class OracleDBRepository implements TaskRepository {
 
         session.getTransaction().commit();
         return tasks;
-    }
-
-    public int getCountTaskByStatus(Task.Status status){
-        int count;
-        session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-        count = session.createQuery("SELECT tt FROM Task tt WHERE tt.status = :status", Task.class).setParameter("status", status).getResultList().size();
-        session.getTransaction().commit();
-        return count;
-    }
-
-    public List<Task> getTaskByStatus(Task.Status status) {
-        List<Task> listTasks;
-        session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-        listTasks = session.createQuery("SELECT tt FROM Task tt where tt.status = :status", Task.class).setParameter("status", status).getResultList();
-        session.getTransaction().commit();
-        return listTasks;
     }
 }
