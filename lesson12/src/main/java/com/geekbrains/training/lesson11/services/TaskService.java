@@ -1,5 +1,6 @@
 package com.geekbrains.training.lesson11.services;
 
+import com.geekbrains.training.lesson11.entities.User;
 import com.geekbrains.training.lesson11.repositories.RepositoryExceptions;
 import com.geekbrains.training.lesson11.repositories.TaskRepository;
 import com.geekbrains.training.lesson11.entities.Task;
@@ -36,6 +37,15 @@ public class TaskService {
         try {
             taskRepository.addTask(id, name, author_id, executor_id, description);
             System.out.println("Задача с id=" + id + " добавлена в массив");
+        } catch (RepositoryExceptions e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void addTask(Task task) {
+        try {
+            taskRepository.addTask(task);
+            System.out.println("Задача с id=" + task.getId() + " добавлена в массив");
         } catch (RepositoryExceptions e) {
             System.out.println(e.getMessage());
         }
@@ -78,14 +88,6 @@ public class TaskService {
         return taskRepository.checkTaskById(id);
     }
 
-    //Получение списка задач в отсортированном по статусу виде: открыта, в работе, закрыта
-    // (можете выбирать любой статус и любой порядок, главное чтобы было 3 разных статуса);
-    public List<Task> getSortTaskByStatus() {
-        return taskRepository.getTaskArray().stream()
-                .sorted((t1, t2) -> (t1.getEnumStatus().getPriority() - t2.getEnumStatus().getPriority()))
-                .collect(Collectors.toList());
-    }
-
     //Подсчет количества задач по определенному статусу
     public int getCountTaskByStatus(Task.Status status) {
         return taskRepository.getCountTaskByStatus(status);
@@ -94,6 +96,15 @@ public class TaskService {
     public List<Task> getAllTask() {
         return taskRepository.getTaskArray();
     }
+
+    public List<User> getAllUsers() {
+        return taskRepository.getUserArray();
+    }
+
+    public User getUserById(Long userId) {
+        return taskRepository.getUserById(userId);
+    }
+
 
     public List<Task> getTasksForMe(Long userId){
         return taskRepository.getTasksForMe(userId);

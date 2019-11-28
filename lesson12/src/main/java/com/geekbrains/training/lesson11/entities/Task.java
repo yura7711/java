@@ -102,8 +102,16 @@ public class Task {
         return name;
     }
 
+    public String getAuthorStr() {
+        return author.getUserName();
+    }
+
     public User getAuthor() {
         return author;
+    }
+
+    public String getExecutorStr() {
+        return executor.getUserName();
     }
 
     public User getExecutor() {
@@ -124,6 +132,26 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public void setExecutor(User executor) {
+        this.executor = executor;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

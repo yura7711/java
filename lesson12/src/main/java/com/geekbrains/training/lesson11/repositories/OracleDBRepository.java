@@ -5,6 +5,7 @@ import com.geekbrains.training.lesson11.entities.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
@@ -14,10 +15,15 @@ import java.util.List;
 
 @Repository
 public class OracleDBRepository implements TaskRepository {
-    private static SessionFactory sessionFactory;
-    private static Session session;
+    private SessionFactory sessionFactory;
+    private Session session;
 
     public OracleDBRepository() {
+    }
+
+    @Autowired
+    public void setSessionFactory(SessionFactory factory){
+        this.sessionFactory = factory;
     }
 
     @PostConstruct
@@ -63,6 +69,21 @@ public class OracleDBRepository implements TaskRepository {
     }
 
     @Override
+    public void addTask(Task task) {
+        session = sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        /*Task taskDb = session.get(Task.class, task.getId());
+
+        if (taskDb != null){
+            session.getTransaction().rollback();
+            throw new TaskIsExistsException(task.getId());
+        }*/
+        task.setId(11111L);
+        session.save(task);
+        session.getTransaction().commit();
+    }
+
+    @Override
     public List<Task> getTaskArray() {
         List<Task> listTasks;
         session = sessionFactory.getCurrentSession();
@@ -70,6 +91,26 @@ public class OracleDBRepository implements TaskRepository {
         listTasks = session.createQuery("SELECT tt FROM Task tt", Task.class).getResultList();
         session.getTransaction().commit();
         return listTasks;
+    }
+
+    @Override
+    public List<User> getUserArray() {
+        List<User> listUsers;
+        session = sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        listUsers = session.createQuery("SELECT usr FROM User usr", User.class).getResultList();
+        session.getTransaction().commit();
+        return listUsers;
+    }
+
+    @Override
+    public User getUserById(Long userId){
+        User user;
+        session = sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        user = session.createQuery("SELECT usr FROM User usr WHERE usr.userId = :userId", User.class).setParameter("userId", userId).getSingleResult();
+        session.getTransaction().commit();
+        return user;
     }
 
     @Override
