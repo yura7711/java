@@ -6,7 +6,6 @@ import com.geekbrains.training.lesson11.entities.User;
 import java.util.List;
 
 public interface TaskRepository {
-    void shutdown();
     boolean checkTaskById(Long id);
     void addTask(Long id, String name, Long author_id, Long executor_id, String description);
     void addTask(Task task);

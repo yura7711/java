@@ -28,10 +28,6 @@ public class TaskService {
         }
     }
 
-    public void shutdown(){
-        taskRepository.shutdown();
-    };
-
     public void addTask(Long id, String name, Long author_id, Long executor_id, String description) {
         try {
             taskRepository.addTask(id, name, author_id, executor_id, description);
