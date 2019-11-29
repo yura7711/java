@@ -1,15 +1,9 @@
 package com.geekbrains.training.lesson11;
 
-import com.geekbrains.training.lesson11.entities.Task;
-import com.geekbrains.training.lesson11.services.TaskService;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
 import java.net.URL;
 import java.security.ProtectionDomain;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainApp {
     public static void main(String[] args) throws Exception {

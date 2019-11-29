@@ -8,7 +8,7 @@
 </head>
 
 <body>
-<h1>Список студентов:</h1>
+<h1>Список задач:</h1>
 <table border="1">
     <thead>
     <tr>
@@ -25,13 +25,13 @@
     <tr th:each="s : ${tasks}">
         <td th:text="${s.id}"></td>
         <td th:text="${s.name}"></td>
-        <td th:text="${s.author}"></td>
-        <td th:text="${s.executor}"></td>
+        <td th:text="${s.author.userName}"></td>
+        <td th:text="${s.executor.userName}"></td>
         <td th:text="${s.description}"></td>
         <td th:text="${s.status}"></td>
     </tr>
     </tbody>
 </table>
-<a th:href="@{/task_form}">Создать новую задачу</a>
+<a th:href="@{/tasks/add}">Создать новую задачу</a>
 </body>
 </html>

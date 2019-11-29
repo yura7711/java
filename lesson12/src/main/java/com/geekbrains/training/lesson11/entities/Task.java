@@ -53,6 +53,8 @@ public class Task {
     }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "s_tasks_id")
+    @SequenceGenerator(name = "s_tasks_id", sequenceName = "s_tasks_id", allocationSize = 1)
     @Column(name="task_id")
     private Long id;
 
@@ -102,16 +104,8 @@ public class Task {
         return name;
     }
 
-    public String getAuthorStr() {
-        return author.getUserName();
-    }
-
     public User getAuthor() {
         return author;
-    }
-
-    public String getExecutorStr() {
-        return executor.getUserName();
     }
 
     public User getExecutor() {

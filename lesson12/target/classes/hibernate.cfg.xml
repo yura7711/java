@@ -10,7 +10,7 @@
     <property name="connection.password">Qwerty123</property>
     <property name="connection.pool_size">8</property>
     <property name="dialect">org.hibernate.dialect.Oracle12cDialect</property>
-    <property name="show_sql">false</property>
+    <property name="show_sql">true</property>
     <property name="current_session_context_class">thread</property>
 
     <mapping class="com.geekbrains.training.lesson11.entities.Task"/>

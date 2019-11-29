@@ -88,7 +88,7 @@ public class OracleDBRepository implements TaskRepository {
         List<Task> listTasks;
         session = sessionFactory.getCurrentSession();
         session.beginTransaction();
-        listTasks = session.createQuery("SELECT tt FROM Task tt", Task.class).getResultList();
+        listTasks = session.createQuery("SELECT tt FROM Task tt ORDER BY tt.id", Task.class).getResultList();
         session.getTransaction().commit();
         return listTasks;
     }
@@ -98,7 +98,7 @@ public class OracleDBRepository implements TaskRepository {
         List<User> listUsers;
         session = sessionFactory.getCurrentSession();
         session.beginTransaction();
-        listUsers = session.createQuery("SELECT usr FROM User usr", User.class).getResultList();
+        listUsers = session.createQuery("SELECT usr FROM User usr ORDER BY usr.userName", User.class).getResultList();
         session.getTransaction().commit();
         return listUsers;
     }

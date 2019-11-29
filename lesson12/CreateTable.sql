@@ -29,6 +29,8 @@ begin
 end;
 /
 
+create sequence s_tasks_id;
+
 create table tasks (task_id integer not null
                    ,task_name varchar2(200) not null
                    ,author_id integer not null

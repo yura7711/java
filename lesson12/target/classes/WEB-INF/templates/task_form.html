@@ -9,12 +9,8 @@
 
 <body>
 <h1>Создание новой задачи</h1>
-<form th:action="@{/saveTask}" th:object="${task}" method="POST">
+<form th:action="@{/tasks/add}" th:object="${task}" method="POST">
     <table>
-        <tr>
-            <td>Идентификатор</td>
-            <td><input th:field="*{id}" /></td>
-        </tr>
         <tr>
             <td>Название</td>
             <td><input th:field="*{name}" /></td>
@@ -22,7 +18,7 @@
         <tr>
             <td>Автор</td>
             <td>
-                <select th:field="*{author}">
+                <select th:field="*{author.userId}">
                     <option th:each="user : ${users}" th:value="${user.userId}" th:text="${user.userName}" />
                 </select>
             </td>
@@ -30,7 +26,7 @@
         <tr>
             <td>Исполнитель</td>
             <td>
-                <select th:field="*{executor}">
+                <select th:field="*{executor.userId}">
                     <option th:each="user : ${users}" th:value="${user.userId}" th:text="${user.userName}" />
                 </select>
             </td>
@@ -44,6 +40,6 @@
 </form>
 <br>
 <br>
-<a th:href="@{/show}">Вернуться к списку задач</a>
+<a th:href="@{/tasks/}">Вернуться к списку задач</a>
 </body>
 </html>
