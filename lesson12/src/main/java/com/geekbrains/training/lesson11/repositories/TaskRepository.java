@@ -12,7 +12,6 @@ public interface TaskRepository {
     void addTask(Task task);
     List<Task> getTaskArray();
     List<User> getUserArray();
-    User getUserById(Long userId);
     void updateTaskStatus(Long idTask, Task.Status newStatus);
     void deleteTask(Long idTask);
     void deleteTask(String nameTask);

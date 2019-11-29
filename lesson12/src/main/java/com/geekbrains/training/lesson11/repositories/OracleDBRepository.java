@@ -72,13 +72,6 @@ public class OracleDBRepository implements TaskRepository {
     public void addTask(Task task) {
         session = sessionFactory.getCurrentSession();
         session.beginTransaction();
-        /*Task taskDb = session.get(Task.class, task.getId());
-
-        if (taskDb != null){
-            session.getTransaction().rollback();
-            throw new TaskIsExistsException(task.getId());
-        }*/
-        task.setId(11111L);
         session.save(task);
         session.getTransaction().commit();
     }
@@ -101,16 +94,6 @@ public class OracleDBRepository implements TaskRepository {
         listUsers = session.createQuery("SELECT usr FROM User usr ORDER BY usr.userName", User.class).getResultList();
         session.getTransaction().commit();
         return listUsers;
-    }
-
-    @Override
-    public User getUserById(Long userId){
-        User user;
-        session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-        user = session.createQuery("SELECT usr FROM User usr WHERE usr.userId = :userId", User.class).setParameter("userId", userId).getSingleResult();
-        session.getTransaction().commit();
-        return user;
     }
 
     @Override

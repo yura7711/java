@@ -100,11 +100,6 @@ public class TaskService {
         return taskRepository.getUserArray();
     }
 
-    public User getUserById(Long userId) {
-        return taskRepository.getUserById(userId);
-    }
-
-
     public List<Task> getTasksForMe(Long userId){
         return taskRepository.getTasksForMe(userId);
     }
