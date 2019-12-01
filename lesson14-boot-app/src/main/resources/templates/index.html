@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Spring MVC GeekApp</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+</head>
+
+<body>
+<h1>Список задач:</h1>
+<form th:action="@{/}" method="GET">
+    <table>
+        <tr>
+            <th colspan="2">Параметры фильтра: </th>
+        </tr>
+        <tr>
+            <td>Статус</td>
+            <td>
+                <select name="statusParam">
+                    <option value="">Все</option>
+                    <option th:each="status : ${statuses}" th:value="${status}" th:text="${status.getRusTitle()}" th:selected="${status}==${statusParam}" />
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Исполнитель</td>
+            <td>
+                <select name="executer_id">
+                    <option value="">Все</option>
+                    <option th:each="user : ${users}" th:value="${user.userId}" th:text="${user.userName}" th:selected="${user.userId}==${executer_id}" />
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Автор</td>
+            <td>
+                <select name="author_id">
+                    <option value="">Все</option>
+                    <option th:each="user : ${users}" th:value="${user.userId}" th:text="${user.userName}" th:selected="${user.userId}==${author_id}" />
+                </select>
+            </td>
+        </tr>
+    </table>
+    <input type="submit" value="Применить"/>
+</form>
+<br>
+<br>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Идентификатор</th>
+        <th>Название</th>
+        <th>Автор</th>
+        <th>Исполнитель</th>
+        <th>Описание</th>
+        <th>Статус</th>
+        <th>Детализация</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!--/*@thymesVar id="tasks" type="java.util.List<com.geekbrains.training.lesson11.entities.Task>"*/-->
+    <tr th:each="s : ${tasks}">
+        <td th:text="${s.id}"></td>
+        <td th:text="${s.name}"></td>
+        <td th:text="${s.author.userName}"></td>
+        <td th:text="${s.executor.userName}"></td>
+        <td><div th:text="${s.description}"></div></td>
+        <td th:text="${s.status.getRusTitle()}"></td>
+        <td><a th:href="@{'/taskDetail?taskId=' + ${s.id}}">Просмотр</a></td>
+    </tr>
+    </tbody>
+</table>
+<a th:href="@{/add}">Создать новую задачу</a>
+</body>
+</html>
