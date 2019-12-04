@@ -7,6 +7,9 @@
     <title>Spring MVC GeekApp</title>
 
     <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -31,8 +34,8 @@
         </tr>
     </table>
 </form>
-<br>
-<br>
-<a th:href="@{/}">Вернуться к списку задач</a>
+<a th:href="@{/}" class="btn btn-primary" role="button" aria-expanded="false" aria-controls="collapseExample">
+    Вернуться к списку задач
+</a>
 </body>
 </html>
