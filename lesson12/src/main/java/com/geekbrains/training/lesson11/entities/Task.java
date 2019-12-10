@@ -53,6 +53,8 @@ public class Task {
     }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "s_tasks_id")
+    @SequenceGenerator(name = "s_tasks_id", sequenceName = "s_tasks_id", allocationSize = 1)
     @Column(name="task_id")
     private Long id;
 
@@ -124,6 +126,26 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public void setExecutor(User executor) {
+        this.executor = executor;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
