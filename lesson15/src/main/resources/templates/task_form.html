@@ -5,41 +5,58 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Spring MVC GeekApp</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-<h1>Создание новой задачи</h1>
-<form th:action="@{/add}" th:object="${task}" method="POST">
-    <table>
-        <tr>
-            <td>Название</td>
-            <td><input th:field="*{name}" /></td>
-        </tr>
-        <tr>
-            <td>Автор</td>
-            <td>
-                <select th:field="*{author.userId}">
+    <div class="container">
+        <h2>Создание новой задачи</h2>
+        <form th:action="@{/add}" th:object="${task}" method="POST">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">Название</span>
+                </div>
+                <input th:field="*{name}" type="text" class="form-control" placeholder="Введите название" aria-label="Введите название" aria-describedby="basic-addon1">
+            </div>
+            <div class="input-group mb-3" style="margin-bottom: auto!important;">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="inputGroupSelect01">Автор</label>
+                </div>
+                <select class="custom-select" id="inputGroupSelect01" th:field="*{author.userId}" th:placeholder="'Статус'">
+                    <option value="">Выберите автора</option>
                     <option th:each="user : ${users}" th:value="${user.userId}" th:text="${user.userName}" />
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td>Исполнитель</td>
-            <td>
-                <select th:field="*{executor.userId}">
+            </div>
+            <div class="input-group mb-3" style="margin-bottom: auto!important;">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="inputGroupSelect01">Исполнитель</label>
+                </div>
+                <select class="custom-select" id="inputGroupSelect01" th:field="*{executor.userId}" th:placeholder="'Статус'">
+                    <option value="">Выберите исполнителя</option>
                     <option th:each="user : ${users}" th:value="${user.userId}" th:text="${user.userName}" />
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td>Описание</td>
-            <td><textarea th:field="*{description}" maxlength="4000"></textarea></td>
-        </tr>
-    </table>
-    <input type="submit" value="Создать"/>
-</form>
-<br>
-<br>
-<a th:href="@{/}">Вернуться к списку задач</a>
+            </div>
+            <div class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}" />
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Описание</span>
+                </div>
+                <textarea th:field="*{description}" class="form-control" aria-label="With textarea"></textarea>
+            </div>
+            <button class="btn btn-success" type="submit" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                Создать
+            </button>
+
+            <a th:href="@{/}" class="btn btn-primary" role="button" aria-expanded="false" aria-controls="collapseExample">
+                Вернуться к списку задач
+            </a>
+        </form>
+
+    </div>
+
 </body>
 </html>

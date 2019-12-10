@@ -4,14 +4,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="tasks")
 @Data
 @NoArgsConstructor
 public class Task {
-    private static final long serialVersionUID = -277821547227621214L;
-
     public enum Status {
         created(1,"Создана", 1)
         , inWork(2,"В работе", 2)
@@ -31,30 +31,6 @@ public class Task {
         public String getRusTitle() {
             return rusTitle;
         }
-
-        public int getPriority() {
-            return priority;
-        }
-
-        public int getStatusId() { return statusId; }
-
-        public static Status getStatusByRusName(String rusName){
-            for (Status status: Status.values()) {
-                if (status.getRusTitle().equals(rusName)){
-                    return status;
-                }
-            }
-            return null;
-        }
-
-        public static Status getStatusById(int statusId){
-            for (Status status: Status.values()) {
-                if (status.getStatusId() == statusId){
-                    return status;
-                }
-            }
-            return null;
-        }
     }
 
     @Id
@@ -64,47 +40,28 @@ public class Task {
     private Long id;
 
     @Column(name="task_name")
+    @Size(min = 3, message = "Название должно содержать минимум 3 символа")
+    @NotNull
     private String name;
 
     @ManyToOne
     @JoinColumn(name="author_id")
+    @NotNull
     private User author;
 
     @ManyToOne
     @JoinColumn(name="executor_id")
+    @NotNull
     private User executor;
 
     @Column(name="description")
+    @Size(max = 4000, message = "Превышена максимальная длина поля")
+    @Size(min = 10, message = "Описание должно содержать минимум 10 символов")
+    @NotNull
     private String description;
 
     @Enumerated(EnumType.STRING)
     private Status status;
-
-    public Task(String name, User author, User executor, String description) {
-        this.name = name;
-        this.author = author;
-        this.executor = executor;
-        this.description = description;
-        this.status = Status.created;
-    }
-
-    public Task(Long id, String name, User author, User executor, String description) {
-        this.id = id;
-        this.name = name;
-        this.author = author;
-        this.executor = executor;
-        this.description = description;
-        this.status = Status.created;
-    }
-
-    public Task(Long id, String name, User author, User executor, String description, Status status) {
-        this.id = id;
-        this.name = name;
-        this.author = author;
-        this.executor = executor;
-        this.description = description;
-        this.status = status;
-    }
 
     @Override
     public boolean equals(Object obj) {
@@ -112,7 +69,6 @@ public class Task {
             return false;
         }
         return this.id.equals(((Task)obj).getId());
-
     }
 
     @Override

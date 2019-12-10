@@ -1,3 +1,11 @@
 div {
     white-space: pre-line;
 }
+
+.error {
+    color: red;
+}
+
+.mb-3, .my-3 {
+    margin-bottom: auto!important;
+}
