@@ -6,16 +6,18 @@ public class TaskDto {
     private String author;
     private String executor;
     private String description;
+    private String status;
 
     public TaskDto() {
     }
 
-    public TaskDto(Long id, String name, String author, String executor, String description) {
+    public TaskDto(Long id, String name, String author, String executor, String description, String status) {
         this.id = id;
         this.name = name;
         this.author = author;
         this.executor = executor;
         this.description = description;
+        this.status = status;
     }
 
     public Long getId() {
@@ -56,5 +58,13 @@ public class TaskDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -1,5 +1,6 @@
 com\geekbrains\gwt\client\TaskTableWidget$2.class
 com\geekbrains\gwt\client\TaskTableWidget$8.class
+com\geekbrains\gwt\client\TaskTableWidget$9.class
 com\geekbrains\gwt\client\FilterTaskFormWidget$1.class
 com\geekbrains\gwt\client\TasksClient.class
 com\geekbrains\gwt\client\FilterTaskFormWidget$3.class
@@ -12,10 +13,10 @@ com\geekbrains\gwt\client\TaskTableWidget$5.class
 com\geekbrains\gwt\client\AddTaskDialogWidget$1.class
 com\geekbrains\gwt\client\TaskTableWidget.class
 com\geekbrains\gwt\client\FilterTaskFormWidget$FilterTaskFormBinder.class
+com\geekbrains\gwt\client\TaskTableWidget$7$1.class
 com\geekbrains\gwt\client\TaskTableWidget$6.class
 com\geekbrains\gwt\client\AddTaskDialogWidget$AddTaskDialogBinder.class
 com\geekbrains\gwt\client\TaskTableWidget$4.class
 com\geekbrains\gwt\client\TaskTableWidget$7.class
-com\geekbrains\gwt\client\TaskTableWidget$6$1.class
 com\geekbrains\gwt\client\FilterTaskFormWidget.class
 com\geekbrains\gwt\client\TaskTableWidget$3.class

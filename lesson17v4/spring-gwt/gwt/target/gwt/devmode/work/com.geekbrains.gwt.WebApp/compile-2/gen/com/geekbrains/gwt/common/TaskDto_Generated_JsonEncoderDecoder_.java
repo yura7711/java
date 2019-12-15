@@ -15,6 +15,7 @@ public class TaskDto_Generated_JsonEncoderDecoder_ extends org.fusesource.restyg
     isNotNullValuePut(org.fusesource.restygwt.client.AbstractJsonEncoderDecoder.STRING.encode(parseValue.getAuthor()), rc, "author");
     isNotNullValuePut(org.fusesource.restygwt.client.AbstractJsonEncoderDecoder.STRING.encode(parseValue.getExecutor()), rc, "executor");
     isNotNullValuePut(org.fusesource.restygwt.client.AbstractJsonEncoderDecoder.STRING.encode(parseValue.getDescription()), rc, "description");
+    isNotNullValuePut(org.fusesource.restygwt.client.AbstractJsonEncoderDecoder.STRING.encode(parseValue.getStatus()), rc, "status");
     return rc;
   }
   
@@ -29,6 +30,7 @@ public class TaskDto_Generated_JsonEncoderDecoder_ extends org.fusesource.restyg
     rc.setAuthor(getValueToSet(org.fusesource.restygwt.client.AbstractJsonEncoderDecoder.STRING.decode(object.get("author")), null));
     rc.setExecutor(getValueToSet(org.fusesource.restygwt.client.AbstractJsonEncoderDecoder.STRING.decode(object.get("executor")), null));
     rc.setDescription(getValueToSet(org.fusesource.restygwt.client.AbstractJsonEncoderDecoder.STRING.decode(object.get("description")), null));
+    rc.setStatus(getValueToSet(org.fusesource.restygwt.client.AbstractJsonEncoderDecoder.STRING.decode(object.get("status")), null));
     return rc;
   }
   

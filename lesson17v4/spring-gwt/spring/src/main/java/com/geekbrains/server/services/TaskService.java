@@ -40,6 +40,7 @@ public class TaskService {
                 ,task.getAuthor().getUserName()
                 ,task.getExecutor().getUserName()
                 ,task.getDescription()
+                ,task.getStatus().getRusTitle()
         );
     }
 
@@ -54,10 +55,6 @@ public class TaskService {
     public Task getTaskById(Long taskId) {
         return taskRepository.findById(taskId).get();
     }
-
-    /*public List<TaskDto> findAllTaskDto() {
-        return taskRepository.findAllTaskDto();
-    }*/
 
     public List<TaskDto> findAllTaskDto(Long executer_id, Long author_id, Integer statusId) {
         Specification<Task> spec = Specification.where(null);
@@ -76,7 +73,7 @@ public class TaskService {
         List<TaskDto> tasksDto = new ArrayList<>();
 
         for (Task task: tasks) {
-            tasksDto.add(new TaskDto(task.getId(), task.getName(), task.getAuthor().getUserName(), task.getExecutor().getUserName(), task.getDescription()));
+            tasksDto.add(new TaskDto(task.getId(), task.getName(), task.getAuthor().getUserName(), task.getExecutor().getUserName(), task.getDescription(), task.getStatus().getRusTitle()));
         }
 
         return tasksDto;

@@ -75,6 +75,14 @@ public class TaskTableWidget extends Composite {
         };
         table.addColumn(descriptionColumn, "description");
 
+        TextColumn<TaskDto> status = new TextColumn<TaskDto>() {
+            @Override
+            public String getValue(TaskDto taskDto) {
+                return taskDto.getStatus();
+            }
+        };
+        table.addColumn(status, "status");
+
         client = GWT.create(TasksClient.class);
 
         Column<TaskDto, TaskDto> actionColumn = new Column<TaskDto, TaskDto>(

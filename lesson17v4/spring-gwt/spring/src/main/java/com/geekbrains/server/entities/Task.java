@@ -41,6 +41,10 @@ public class Task {
             return rusTitle;
         }
 
+        public void setRusTitle(String rusTitle) {
+            this.rusTitle = rusTitle;
+        }
+
         public Integer getStatusId() {
             return statusId;
         }
@@ -86,6 +90,7 @@ public class Task {
     @NotNull
     private String description;
 
+    @Column(name="status")
     @Enumerated(EnumType.STRING)
     private Status status;
 
