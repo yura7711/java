@@ -1,0 +1,13 @@
+binding: user.agent=safari
+Compiling module com.geekbrains.gwt.WebApp
+   Unification traversed 779 fields and methods and 418 types. 10 are considered part of the current module and 18 had all of their fields and methods traversed.
+   Compiling 1 permutation
+      Compiling permutation 0...
+      Linking per-type JS with 10 new/changed types.
+      Source Maps Enabled
+   Compile of permutations succeeded
+   Compilation succeeded -- 1,332s
+Linking into C:\Users\FlameXander\Desktop\spring-gwt\gwt\target\gwt\devmode\work\com.geekbrains.gwt.WebApp\compile-4\war\webapp; Writing extras to C:\Users\FlameXander\Desktop\spring-gwt\gwt\target\gwt\devmode\work\com.geekbrains.gwt.WebApp\compile-4\extras\webapp
+   Link succeeded
+   Linking succeeded -- 0,199s
+1,645s total -- Compile completed
