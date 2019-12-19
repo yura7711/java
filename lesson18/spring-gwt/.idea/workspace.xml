@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="7666760e-dc24-442a-9283-f0c639698126" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../../lesson14-boot-app/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../lesson14-boot-app/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/geekbrains/gwt/common/TaskDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/common/src/main/java/com/geekbrains/gwt/common/TaskDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/target/classes/com/geekbrains/gwt/common/TaskDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/common/target/classes/com/geekbrains/gwt/common/TaskDto.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/target/gwt-common-1.0-SNAPSHOT-sources.jar" beforeDir="false" afterPath="$PROJECT_DIR$/common/target/gwt-common-1.0-SNAPSHOT-sources.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/target/gwt-common-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/common/target/gwt-common-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/common/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwt/src/main/java/com/geekbrains/gwt/client/TaskTableWidget.java" beforeDir="false" afterPath="$PROJECT_DIR$/gwt/src/main/java/com/geekbrains/gwt/client/TaskTableWidget.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwt/target/gwt-unitCache/gwt-unitCache-7a87e060bbf129386b7ae772459fb9f87297c332-FF35F588CF7564DE259004F02565B00E-0000016F09B2AA03" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwt/target/gwt-unitCache/gwt-unitCache-7a87e060bbf129386b7ae772459fb9f87297c332-FF35F588CF7564DE259004F02565B00E-0000016F09B2C868" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwt/target/gwt-unitCache/gwt-unitCache-7a87e060bbf129386b7ae772459fb9f87297c332-FF35F588CF7564DE259004F02565B00E-0000016F09B2D27D" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwt/target/gwt-unitCache/gwt-unitCache-7a87e060bbf129386b7ae772459fb9f87297c332-FF35F588CF7564DE259004F02565B00E-0000016F09B2D3C3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwt/target/gwt-unitCache/gwt-unitCache-7a87e060bbf129386b7ae772459fb9f87297c332-FF35F588CF7564DE259004F02565B00E-0000016F09B2D3FB" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwt/target/gwt-unitCache/gwt-unitCache-7a87e060bbf129386b7ae772459fb9f87297c332-FF35F588CF7564DE259004F02565B00E-0000016F09B2D46D" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwt/target/gwt-unitCache/gwt-unitCache-7a87e060bbf129386b7ae772459fb9f87297c332-FF35F588CF7564DE259004F02565B00E-0000016F09B2D49D" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gwt/target/gwt-unitCache/gwt-unitCache-7a87e060bbf129386b7ae772459fb9f87297c332-FF35F588CF7564DE259004F02565B00E-0000016F09B2D4B9" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring/src/main/java/com/geekbrains/server/entities/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring/src/main/java/com/geekbrains/server/entities/Task.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring/src/main/java/com/geekbrains/server/repositories/TaskRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring/src/main/java/com/geekbrains/server/repositories/TaskRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring/src/main/java/com/geekbrains/server/services/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring/src/main/java/com/geekbrains/server/services/TaskService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring/target/classes/com/geekbrains/server/repositories/TaskRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring/target/classes/com/geekbrains/server/repositories/TaskRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring/target/classes/com/geekbrains/server/services/TaskService.class" beforeDir="false" afterPath="$PROJECT_DIR$/spring/target/classes/com/geekbrains/server/services/TaskService.class" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="J:\git_java\java\lesson17\spring-gwt\.idea" />
+      </set>
+    </option>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1Uhd1j5zlHOocr1Jxt0z8wnvJ7V" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="J:\git_java\java\lesson17\spring-gwt\gwt\src\main\java\com\geekbrains\gwt\client" />
+      <recent name="J:\git_java\java\lesson17\spring-gwt\spring\src\main\java\com\geekbrains\server\services" />
+      <recent name="J:\git_java\java\lesson17\spring-gwt\spring\src\main\java\com\geekbrains\server\repositories" />
+      <recent name="J:\git_java\java\lesson17\spring-gwt\spring\src\main\java\com\geekbrains\server" />
+      <recent name="J:\git_java\java\lesson17\spring-gwt\spring\src\main\resources" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.geekbrains.gwt.client" />
+      <recent name="com.geekbrains.server.controllers" />
+      <recent name="com.geekbrains.server.repositories.specifications" />
+      <recent name="com.geekbrains.gwt.dto" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\FlameXander\Desktop\spring-gwt\temp" />
+      <recent name="C:\Users\FlameXander\Desktop\spring-gwt\common\src\main\resources\com\geekbrains\gwt" />
+      <recent name="C:\Users\FlameXander\Desktop\spring-gwt\common\src\main\java\com\geekbrains\gwt" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Application.SimpleRestApplication">
+    <configuration name="SimpleRestApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.geekbrains.server.SimpleRestApplication" />
+      <module name="spring-for-gwt-rest" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.geekbrains.server.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SimpleRestApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="spring" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.geekbrains.server.SimpleRestApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.SimpleRestApplication" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7666760e-dc24-442a-9283-f0c639698126" name="Default Changelist" comment="" />
+      <created>1575812547641</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1575812547641</updated>
+      <workItem from="1575812551119" duration="3429000" />
+      <workItem from="1575833736663" duration="18466000" />
+      <workItem from="1575886131754" duration="6852000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
