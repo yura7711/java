@@ -32,8 +32,17 @@ public class TaskService {
     public TaskDto addTask(TaskAddDto taskAddDto) {
         User author = userRepository.findById(taskAddDto.getAuthor_id()).get();
         User executer = userRepository.findById(taskAddDto.getExecutor_id()).get();
-
-        Task task = taskRepository.save(new Task(taskAddDto, author, executer));
+        Task task;
+        if (taskAddDto.getId() == null) {
+            System.out.println("add task");
+            task = taskRepository.save(new Task(taskAddDto, author, executer));
+        }
+        else{
+            System.out.println("edit task");
+            task = taskRepository.findById(taskAddDto.getId()).get();
+            task = new Task(taskAddDto, author, executer);
+            taskRepository.save(task);
+        }
 
         return new TaskDto(task.getId()
                 ,task.getName()
@@ -45,11 +54,8 @@ public class TaskService {
     }
 
     public void deleteTask(Long id) {
-        for (Task o: taskRepository.findAll()) {
-            if (o.getId() == id){
-                taskRepository.delete(o);
-            }
-        }
+        Task task = taskRepository.findById(id).get();
+        taskRepository.delete(task);
     }
 
     public Task getTaskById(Long taskId) {
@@ -77,5 +83,10 @@ public class TaskService {
         }
 
         return tasksDto;
+    }
+
+    public TaskAddDto findById(Long id) {
+        Task task = taskRepository.findById(id).get();
+        return new TaskAddDto(task.getId(), task.getName(), task.getAuthor().getUserId(), task.getExecutor().getUserId(), task.getDescription());
     }
 }

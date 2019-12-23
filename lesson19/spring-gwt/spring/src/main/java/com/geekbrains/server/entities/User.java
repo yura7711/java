@@ -53,6 +53,4 @@ public class User {
     public List<Task> getTasksForMe() {
         return tasksForMe;
     }
-
-
 }

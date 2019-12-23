@@ -52,9 +52,6 @@ public class LoginForm extends Composite {
 
     @UiHandler("btnSubmit")
     public void submitClick(ClickEvent event) {
-//        Storage storage = Storage.getLocalStorageIfSupported();
-        GWT.log(textUserlogin.getValue());
-        GWT.log(textPassword.getValue());
         JwtAuthRequestDto jwtAuthRequestDto = new JwtAuthRequestDto(textUserlogin.getValue(), textPassword.getValue());
         AuthClient authClient = GWT.create(AuthClient.class);
         authClient.authenticate(jwtAuthRequestDto, new MethodCallback<JwtAuthResponseDto>() {

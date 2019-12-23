@@ -13,25 +13,36 @@ import java.util.List;
 @Path("/api/v1/tasks")
 public interface TasksClient extends RestService {
     @GET
-    void getAllTasks(@QueryParam("statusId") Integer statusId
+    void getAllTasks(@HeaderParam("Authorization") String token
+            ,@QueryParam("statusId") Integer statusId
             ,@QueryParam("executer_id") Long executer_id
             ,@QueryParam("author_id") Long author_id
             ,MethodCallback<List<TaskDto>> tasks
     );
 
     @GET
+    @Path("/{id}")
+    void getTask(@HeaderParam("Authorization") String token, @PathParam("id") String id, MethodCallback<TaskAddDto> result);
+
+    @GET
     @Path("/statuses")
-    void getStatuses(MethodCallback<List<StatusDto>> statuses);
+    void getStatuses(@HeaderParam("Authorization") String token
+            ,MethodCallback<List<StatusDto>> statuses
+    );
 
     @GET
     @Path("/users")
-    void getUsers(MethodCallback<List<UserDto>> statuses);
+    void getUsers(@HeaderParam("Authorization") String token
+            ,MethodCallback<List<UserDto>> statuses
+    );
 
     @DELETE
     @Path("/remove/{id}")
-    void removeTask(@PathParam("id") String id, MethodCallback<Void> result);
+    void removeTask(@HeaderParam("Authorization") String token
+            ,@PathParam("id") String id, MethodCallback<Void> result
+    );
 
     @POST
     @Path("/add")
-    void createTask(@BeanParam() TaskAddDto taskAddDto, MethodCallback<Void> result);
+    void createTask(@HeaderParam("Authorization") String token, @BeanParam() TaskAddDto taskAddDto, MethodCallback<Void> result);
 }

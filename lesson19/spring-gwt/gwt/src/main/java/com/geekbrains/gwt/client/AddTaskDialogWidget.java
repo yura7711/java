@@ -1,15 +1,16 @@
 package com.geekbrains.gwt.client;
 
+import com.geekbrains.gwt.common.TaskAddDto;
 import com.geekbrains.gwt.common.UserDto;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.storage.client.Storage;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import org.fusesource.restygwt.client.Defaults;
 import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;
 
@@ -20,13 +21,7 @@ public class AddTaskDialogWidget extends Composite {
     DialogBox dialog;
 
     @UiField
-    FormPanel form;
-
-    @UiField
     TextBox name;
-
-    @UiField
-    ListBox author_id;
 
     @UiField
     ListBox executor_id;
@@ -45,7 +40,6 @@ public class AddTaskDialogWidget extends Composite {
 
     public AddTaskDialogWidget(TaskTableWidget taskTableWidget) {
         this.initWidget(uiBinder.createAndBindUi(this));
-        this.form.setAction(Defaults.getServiceRoot().concat("tasks/add"));
         this.taskTableWidget = taskTableWidget;
 
         dialog.center();
@@ -53,7 +47,7 @@ public class AddTaskDialogWidget extends Composite {
 
         client = GWT.create(TasksClient.class);
 
-        client.getUsers(new MethodCallback<List<UserDto>>() {
+        client.getUsers(Storage.getLocalStorageIfSupported().getItem("jwt"), new MethodCallback<List<UserDto>>() {
             @Override
             public void onFailure(Method method, Throwable throwable) {
                 GWT.log(throwable.toString());
@@ -66,29 +60,26 @@ public class AddTaskDialogWidget extends Composite {
                 GWT.log("Received " + i.size() + " users");
                 for (UserDto o: i) {
                     executor_id.addItem(o.getUserName(), o.getUserId().toString());
-                    author_id.addItem(o.getUserName(), o.getUserId().toString());
                 }
             }
         });
     }
 
-    @UiHandler("form")
-    public void onSubmit(FormPanel.SubmitEvent event) {
-        if (name.getText().length() < 4) {
-            Window.alert("Название задачи должно быть не менее 4 символов");
-            event.cancel();
-        }
-    }
-
-    @UiHandler("form")
-    public void onSubmitComplete(FormPanel.SubmitCompleteEvent event) {
-        dialog.hide();
-        taskTableWidget.refresh();
-    }
-
     @UiHandler("btnSubmit")
     public void submitClick(ClickEvent event) {
-        form.submit();
+        TaskAddDto taskDto = new TaskAddDto(null, name.getText(), null, Long.parseLong(executor_id.getSelectedValue()), description.getText());
+        client.createTask(Storage.getLocalStorageIfSupported().getItem("jwt"), taskDto, new MethodCallback<Void>() {
+            @Override
+            public void onFailure(Method method, Throwable throwable) {
+                Window.alert("Ошибка при добавлении задачи");
+            }
+
+            @Override
+            public void onSuccess(Method method, Void aVoid) {
+                dialog.hide();
+                taskTableWidget.refresh();
+            }
+        });
     }
 
     @UiHandler("btnCancel")
