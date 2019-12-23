@@ -2,6 +2,7 @@ package com.geekbrains.server.controllers;
 
 import com.geekbrains.gwt.common.TaskAddDto;
 import com.geekbrains.gwt.common.TaskDto;
+import com.geekbrains.server.configs.JwtTokenUtil;
 import com.geekbrains.server.entities.Task;
 import com.geekbrains.server.entities.User;
 import com.geekbrains.server.services.TaskService;
@@ -20,6 +21,7 @@ import java.util.List;
 public class TaskController {
     TaskService myTaskService;
     UserService myUserService;
+    JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     public void setTaskService(TaskService taskService) {
@@ -31,11 +33,25 @@ public class TaskController {
         this.myUserService = userService;
     }
 
-    @GetMapping("/")
-    public List<TaskDto> getAllItems(@RequestParam(value = "statusId", required = false) Integer statusId
+    @Autowired
+    public void setJwtTokenUtil(JwtTokenUtil jwtTokenUtil) {
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
+
+    @GetMapping("/{id}")
+    public TaskAddDto getItem(@PathVariable Long id) {
+        return myTaskService.findById(id);
+    }
+
+    @GetMapping
+    public List<TaskDto> getAllTasks(@RequestParam(value = "statusId", required = false) Integer statusId
             , @RequestParam(value = "executer_id", required = false) Long executer_id
             , @RequestParam(value = "author_id", required = false) Long author_id
+            ,@RequestHeader("Authorization") String authorization
     ) {
+        String userLogin = jwtTokenUtil.extractUsername(authorization.substring(7));
+        User user = myUserService.findOneByUserLogin(userLogin);
+        System.out.println(user.getUserId());
         List<TaskDto> tasks = myTaskService.findAllTaskDto(executer_id, author_id, statusId);
         return tasks;
     }
@@ -47,7 +63,7 @@ public class TaskController {
             statuses.add(o);
         }
         return statuses;
-    }
+}
 
     @GetMapping("/users")
     public List<User> getUsers() {
@@ -61,7 +77,14 @@ public class TaskController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> createTask(@ModelAttribute TaskAddDto taskAddDto) {
+    public ResponseEntity<String> createTask(@RequestBody TaskAddDto taskAddDto
+            ,@RequestHeader("Authorization") String authorization
+    ) {
+        if (taskAddDto.getId() == null) {
+            String userLogin = jwtTokenUtil.extractUsername(authorization.substring(7));
+            User user = myUserService.findOneByUserLogin(userLogin);
+            taskAddDto.setAuthor_id(user.getUserId());
+        }
         myTaskService.addTask(taskAddDto);
         return new ResponseEntity<String>("Successfully created", HttpStatus.OK);
     }

@@ -5,8 +5,16 @@
         <g:DialogBox ui:field="dialog">
             <g:VerticalPanel spacing="10">
                 <g:HorizontalPanel>
+                    <g:Button ui:field="btnRemove">Удалить задачу</g:Button>
+                </g:HorizontalPanel>
+                <g:HorizontalPanel>
                     <g:Label text="Название:" width="100px"/>
                     <g:TextBox name="name" ui:field="name"/>
+                </g:HorizontalPanel>
+                <g:HorizontalPanel>
+                    <g:Label text="Автор:" width="100px"/>
+                    <g:ListBox name="author_id" ui:field="author_id">
+                    </g:ListBox>
                 </g:HorizontalPanel>
                 <g:HorizontalPanel>
                     <g:Label text="Исполнитель:" width="100px"/>
@@ -18,7 +26,7 @@
                     <g:TextBox name="description" ui:field="description"/>
                 </g:HorizontalPanel>
                 <g:HorizontalPanel>
-                    <g:Button ui:field="btnSubmit">Создать</g:Button>
+                    <g:Button ui:field="btnSubmit">Сохранить</g:Button>
                     <g:Button ui:field="btnCancel">Отмена</g:Button>
                 </g:HorizontalPanel>
             </g:VerticalPanel>

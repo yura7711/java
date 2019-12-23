@@ -5,6 +5,7 @@ import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.storage.client.Storage;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -13,6 +14,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.fusesource.restygwt.client.Method;
@@ -32,8 +34,8 @@ public class TaskTableWidget extends Composite {
     private static TaskTableBinder uiBinder = GWT.create(TaskTableBinder.class);
 
     public TaskTableWidget() {
-        initWidget(uiBinder.createAndBindUi(this));
-//         table.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
+        TaskTableWidget taskTableWidget = this;
+        initWidget(uiBinder.createAndBindUi(taskTableWidget));
 
         TextColumn<TaskDto> idColumn = new TextColumn<TaskDto>() {
             @Override
@@ -85,22 +87,11 @@ public class TaskTableWidget extends Composite {
 
         client = GWT.create(TasksClient.class);
 
-        Column<TaskDto, TaskDto> actionColumn = new Column<TaskDto, TaskDto>(
-                new ActionCell<TaskDto>("REMOVE", new ActionCell.Delegate<TaskDto>() {
+        Column<TaskDto, TaskDto> viewTask = new Column<TaskDto, TaskDto>(
+                new ActionCell<TaskDto>("Открыть задачу", new ActionCell.Delegate<TaskDto>() {
                     @Override
                     public void execute(TaskDto task) {
-                        client.removeTask(task.getId().toString(), new MethodCallback<Void>() {
-                            @Override
-                            public void onFailure(Method method, Throwable throwable) {
-                                GWT.log(throwable.toString());
-                                GWT.log(throwable.getMessage());
-                            }
-
-                            @Override
-                            public void onSuccess(Method method, Void result) {
-                                refresh();
-                            }
-                        });
+                        EditTaskDialogWidget editTaskDialogWidget = new EditTaskDialogWidget(taskTableWidget, task.getId());
                     }
                 })) {
             @Override
@@ -109,17 +100,19 @@ public class TaskTableWidget extends Composite {
             }
         };
 
-        table.addColumn(actionColumn, "Actions");
+        table.addColumn(viewTask, "Редактировать");
 
         table.setColumnWidth(idColumn, 100, Style.Unit.PX);
         table.setColumnWidth(nameColumn, 400, Style.Unit.PX);
-        table.setColumnWidth(actionColumn, 200, Style.Unit.PX);
+        table.setColumnWidth(viewTask, 200, Style.Unit.PX);
 
         refresh();
     }
 
     public void refresh() {
-        client.getAllTasks(null, null, null, new MethodCallback<List<TaskDto>>() {
+        String token = Storage.getLocalStorageIfSupported().getItem("jwt");
+        GWT.log("STORAGE: " + token);
+        client.getAllTasks(token, null, null, null, new MethodCallback<List<TaskDto>>() {
             @Override
             public void onFailure(Method method, Throwable throwable) {
                 GWT.log(throwable.toString());

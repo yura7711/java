@@ -1,7 +1,6 @@
 package com.geekbrains.server.services;
 
 import com.geekbrains.gwt.common.UserDto;
-import com.geekbrains.server.entities.Role;
 import com.geekbrains.server.entities.User;
 import com.geekbrains.server.repositories.RoleRepository;
 import com.geekbrains.server.repositories.UserRepository;
@@ -41,6 +40,10 @@ public class UserService implements UserDetailsService {
 
     public User getUserById(Long userId) {
         return userRepository.findById(userId).get();
+    }
+
+    public User findOneByUserLogin(String userLogin){
+        return userRepository.findOneByUserLogin(userLogin);
     }
 
     @Autowired

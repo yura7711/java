@@ -5,6 +5,7 @@ import com.geekbrains.gwt.common.TaskDto;
 import com.geekbrains.gwt.common.UserDto;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.storage.client.Storage;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -42,7 +43,7 @@ public class FilterTaskFormWidget extends Composite {
         this.taskTableWidget = taskTableWidget;
         client = GWT.create(TasksClient.class);
 
-        client.getStatuses(new MethodCallback<List<StatusDto>>() {
+        client.getStatuses(Storage.getLocalStorageIfSupported().getItem("jwt"), new MethodCallback<List<StatusDto>>() {
             @Override
             public void onFailure(Method method, Throwable throwable) {
                 GWT.log(throwable.toString());
@@ -59,7 +60,7 @@ public class FilterTaskFormWidget extends Composite {
             }
         });
 
-        client.getUsers(new MethodCallback<List<UserDto>>() {
+        client.getUsers(Storage.getLocalStorageIfSupported().getItem("jwt"), new MethodCallback<List<UserDto>>() {
             @Override
             public void onFailure(Method method, Throwable throwable) {
                 GWT.log(throwable.toString());
@@ -102,7 +103,7 @@ public class FilterTaskFormWidget extends Composite {
             e.printStackTrace();
         }
 
-        client.getAllTasks(status
+        client.getAllTasks(Storage.getLocalStorageIfSupported().getItem("jwt"), status
                 ,executer
                 ,author
                 , new MethodCallback<List<TaskDto>>() {
