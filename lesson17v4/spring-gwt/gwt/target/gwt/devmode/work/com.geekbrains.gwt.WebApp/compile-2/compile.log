@@ -1,0 +1,17 @@
+binding: user.agent=safari
+Compiling module com.geekbrains.gwt.WebApp
+   Unification traversed 24535 fields and methods and 2313 types. 2273 are considered part of the current module and 2273 had all of their fields and methods traversed.
+   Warnings in com/google/gwt/emul/java/util/Arrays.java
+      [WARN] Line 1782: [unusable-by-js] Type of parameter 'd1' in 'int Arrays.1methodref$compare$Type.compare(long, long)' is not usable by but exposed to JavaScript.
+      [WARN] Line 1782: [unusable-by-js] Type of parameter 'd2' in 'int Arrays.1methodref$compare$Type.compare(long, long)' is not usable by but exposed to JavaScript.
+   [WARN] Suppress "[unusable-by-js]" warnings by adding a `@SuppressWarnings("unusable-by-js")` annotation to the corresponding member.
+   Compiling 1 permutation
+      Compiling permutation 0...
+      Linking per-type JS with 2252 new/changed types.
+      Source Maps Enabled
+   Compile of permutations succeeded
+   Compilation succeeded -- 5,022s
+Linking into J:\git_java\java_gwt\lesson17v4\spring-gwt\gwt\target\gwt\devmode\work\com.geekbrains.gwt.WebApp\compile-2\war\webapp; Writing extras to J:\git_java\java_gwt\lesson17v4\spring-gwt\gwt\target\gwt\devmode\work\com.geekbrains.gwt.WebApp\compile-2\extras\webapp
+   Link succeeded
+   Linking succeeded -- 0,642s
+5,731s total -- Compile completed
