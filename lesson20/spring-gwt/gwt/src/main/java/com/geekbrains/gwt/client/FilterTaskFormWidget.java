@@ -1,6 +1,5 @@
 package com.geekbrains.gwt.client;
 
-import com.geekbrains.gwt.common.StatusDto;
 import com.geekbrains.gwt.common.TaskDto;
 import com.geekbrains.gwt.common.UserDto;
 import com.google.gwt.core.client.GWT;
@@ -16,10 +15,9 @@ import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;
 import java.util.List;
 
-public class FilterTaskFormWidget extends Composite {
-    @UiField
-    FormPanel filter;
+import static com.geekbrains.gwt.client.Utils.getToken;
 
+public class FilterTaskFormWidget extends Composite {
     @UiField
     ListBox statusId = null;
 
@@ -31,6 +29,7 @@ public class FilterTaskFormWidget extends Composite {
 
     private TaskTableWidget taskTableWidget;
     private TasksClient client;
+    private UserClient userClient;
 
     @UiTemplate("FilterTaskForm.ui.xml")
     interface FilterTaskFormBinder extends UiBinder<Widget, FilterTaskFormWidget> {
@@ -42,8 +41,11 @@ public class FilterTaskFormWidget extends Composite {
         this.initWidget(uiBinder.createAndBindUi(this));
         this.taskTableWidget = taskTableWidget;
         client = GWT.create(TasksClient.class);
+        userClient = GWT.create(UserClient.class);
+    }
 
-        client.getStatuses(Storage.getLocalStorageIfSupported().getItem("jwt"), new MethodCallback<List<StatusDto>>() {
+    public void refresh() {
+        client.getStatuses(getToken(), new MethodCallback<List<TaskDto.StatusDto>>() {
             @Override
             public void onFailure(Method method, Throwable throwable) {
                 GWT.log(throwable.toString());
@@ -52,20 +54,20 @@ public class FilterTaskFormWidget extends Composite {
             }
 
             @Override
-            public void onSuccess(Method method, List<StatusDto> i) {
+            public void onSuccess(Method method, List<TaskDto.StatusDto> i) {
                 GWT.log("Received " + i.size() + " statuses");
-                for (StatusDto o: i) {
+                for (TaskDto.StatusDto o: i) {
                     statusId.addItem(o.getRusTitle(), o.getStatusId().toString());
                 }
             }
         });
 
-        client.getUsers(Storage.getLocalStorageIfSupported().getItem("jwt"), new MethodCallback<List<UserDto>>() {
+        userClient.getUsers(getToken(), new MethodCallback<List<UserDto>>() {
             @Override
             public void onFailure(Method method, Throwable throwable) {
                 GWT.log(throwable.toString());
                 GWT.log(throwable.getMessage());
-                Window.alert("Невозможно получить список Статусов: " + throwable.getMessage());
+                Window.alert("Невозможно получить список Пользователей: " + throwable.getMessage());
             }
 
             @Override
@@ -103,7 +105,7 @@ public class FilterTaskFormWidget extends Composite {
             e.printStackTrace();
         }
 
-        client.getAllTasks(Storage.getLocalStorageIfSupported().getItem("jwt"), status
+        client.getAllTasks(getToken(), status
                 ,executer
                 ,author
                 , new MethodCallback<List<TaskDto>>() {

@@ -2,17 +2,21 @@ package com.geekbrains.server.controllers;
 
 import com.geekbrains.gwt.common.TaskAddDto;
 import com.geekbrains.gwt.common.TaskDto;
+import com.geekbrains.gwt.common.UserDto;
 import com.geekbrains.server.configs.JwtTokenUtil;
 import com.geekbrains.server.entities.Task;
-import com.geekbrains.server.entities.User;
+import com.geekbrains.server.exceptions.ResourceNotFoundException;
+import com.geekbrains.server.mappers.StatusMapper;
 import com.geekbrains.server.services.TaskService;
 import com.geekbrains.server.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -39,35 +43,32 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public TaskAddDto getItem(@PathVariable Long id) {
-        return myTaskService.findById(id);
+    public ResponseEntity<TaskDto> getTask(@PathVariable Long id) {
+        if (!myTaskService.existsById(id)) {
+            throw new ResourceNotFoundException("Task with id: " + id + " not found");
+        }
+
+        return new ResponseEntity<>(myTaskService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping
-    public List<TaskDto> getAllTasks(@RequestParam(value = "statusId", required = false) Integer statusId
+    public ResponseEntity<List<TaskDto>> getAllTasks(@RequestParam(value = "statusId", required = false) Integer statusId
             , @RequestParam(value = "executer_id", required = false) Long executer_id
             , @RequestParam(value = "author_id", required = false) Long author_id
             ,@RequestHeader("Authorization") String authorization
     ) {
         String userLogin = jwtTokenUtil.extractUsername(authorization.substring(7));
-        User user = myUserService.findOneByUserLogin(userLogin);
-        System.out.println(user.getUserId());
+        UserDto userDto = myUserService.findOneByUserLogin(userLogin);
+        System.out.println(userDto.getUserId());
         List<TaskDto> tasks = myTaskService.findAllTaskDto(executer_id, author_id, statusId);
-        return tasks;
+
+        return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
 
     @GetMapping("/statuses")
-    public List<Task.Status> getStatuses() {
-        List<Task.Status> statuses = new ArrayList<>();
-        for (Task.Status o: Task.Status.values()) {
-            statuses.add(o);
-        }
-        return statuses;
-}
-
-    @GetMapping("/users")
-    public List<User> getUsers() {
-        return myUserService.getAllUsers();
+    public ResponseEntity<List<TaskDto.StatusDto>> getStatuses() {
+        List<TaskDto.StatusDto> statuses = StatusMapper.MAPPER.fromStatusList(Task.Status.values());
+        return new ResponseEntity<>(statuses, HttpStatus.OK);
     }
 
     @DeleteMapping("/remove/{id}")
@@ -77,15 +78,41 @@ public class TaskController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> createTask(@RequestBody TaskAddDto taskAddDto
+    public ResponseEntity<String> createTask(@RequestBody @Valid TaskAddDto taskAddDto
+            ,BindingResult bindingResult
             ,@RequestHeader("Authorization") String authorization
     ) {
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder();
+            for (ObjectError o : bindingResult.getAllErrors()) {
+                errorMessage.append(o.getDefaultMessage()).append(";\n");
+            }
+            return new ResponseEntity<>(errorMessage.toString(), HttpStatus.BAD_REQUEST);
+        }
+
         if (taskAddDto.getId() == null) {
             String userLogin = jwtTokenUtil.extractUsername(authorization.substring(7));
-            User user = myUserService.findOneByUserLogin(userLogin);
-            taskAddDto.setAuthor_id(user.getUserId());
+            UserDto userDto = myUserService.findOneByUserLogin(userLogin);
+            taskAddDto.setAuthor_id(userDto.getUserId());
         }
         myTaskService.addTask(taskAddDto);
-        return new ResponseEntity<String>("Successfully created", HttpStatus.OK);
+        return new ResponseEntity<String>("Successfully created", HttpStatus.CREATED);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<String> updateTask(@RequestBody @Valid TaskAddDto taskAddDto,BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder();
+            for (ObjectError o : bindingResult.getAllErrors()) {
+                errorMessage.append(o.getDefaultMessage()).append(";\n");
+            }
+            return new ResponseEntity<>(errorMessage.toString(), HttpStatus.BAD_REQUEST);
+        }
+
+        if (taskAddDto.getId() == null) {
+            throw new ResourceNotFoundException("Не передан идентификатор задачи");
+        }
+        myTaskService.addTask(taskAddDto);
+        return new ResponseEntity<String>("Successfully updated", HttpStatus.OK);
     }
 }

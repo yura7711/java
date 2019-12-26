@@ -94,6 +94,9 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    public Task() {
+    }
+
     public Task(TaskAddDto taskAddDto, User author, User executer) {
         this.id = taskAddDto.getId();
         this.name = taskAddDto.getName();
@@ -114,5 +117,53 @@ public class Task {
     @Override
     public String toString() {
         return "***\nid=" + id + " " + name + "\nСтатус: " + status.getRusTitle() + "\nИсполнитель: " + executor.getUserName() + "\nАвтор: " + author.getUserName() + "\nОписание: " + description;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public User getExecutor() {
+        return executor;
+    }
+
+    public void setExecutor(User executor) {
+        this.executor = executor;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

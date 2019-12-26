@@ -2,34 +2,36 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
     <g:DecoratorPanel>
-        <g:DialogBox ui:field="dialog">
             <g:VerticalPanel spacing="10">
                 <g:HorizontalPanel>
                     <g:Button ui:field="btnRemove">Удалить задачу</g:Button>
                 </g:HorizontalPanel>
                 <g:HorizontalPanel>
-                    <g:Label text="Название:" width="100px"/>
-                    <g:TextBox ui:field="name"/>
+                    <g:Label text="Тема:" width="100px"/>
+                    <g:Label ui:field="name"/>
                 </g:HorizontalPanel>
                 <g:HorizontalPanel>
-                    <g:Label text="Автор:" width="100px"/>
-                    <g:ListBox ui:field="author_id">
-                    </g:ListBox>
+                    <g:Label text="Статус:" width="100px"/>
+                    <g:Label ui:field="statusName"/>
                 </g:HorizontalPanel>
                 <g:HorizontalPanel>
                     <g:Label text="Исполнитель:" width="100px"/>
-                    <g:ListBox ui:field="executor_id">
-                    </g:ListBox>
+                    <g:Label ui:field="executor_name">
+                    </g:Label>
+                </g:HorizontalPanel>
+                <g:HorizontalPanel>
+                    <g:Label text="Автор:" width="100px"/>
+                    <g:Label ui:field="author_name">
+                    </g:Label>
                 </g:HorizontalPanel>
                 <g:HorizontalPanel>
                     <g:Label text="Описание:" width="100px"/>
-                    <g:TextBox ui:field="description"/>
+                    <g:Label ui:field="description"/>
                 </g:HorizontalPanel>
                 <g:HorizontalPanel>
-                    <g:Button ui:field="btnSubmit">Сохранить</g:Button>
-                    <g:Button ui:field="btnCancel">Отмена</g:Button>
+                    <g:Button ui:field="btnCancel">Назад</g:Button>
+                    <g:Button ui:field="btnEditTask">Редактировать</g:Button>
                 </g:HorizontalPanel>
             </g:VerticalPanel>
-        </g:DialogBox>
     </g:DecoratorPanel>
 </ui:UiBinder>

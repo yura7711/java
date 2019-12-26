@@ -6,16 +6,16 @@
             <g:VerticalPanel spacing="10">
                 <g:HorizontalPanel>
                     <g:Label text="Название:" width="100px"/>
-                    <g:TextBox name="name" ui:field="name"/>
+                    <g:TextBox ui:field="name"/>
                 </g:HorizontalPanel>
                 <g:HorizontalPanel>
                     <g:Label text="Исполнитель:" width="100px"/>
-                    <g:ListBox name="executor_id" ui:field="executor_id">
+                    <g:ListBox ui:field="executor_id">
                     </g:ListBox>
                 </g:HorizontalPanel>
                 <g:HorizontalPanel>
                     <g:Label text="Описание:" width="100px"/>
-                    <g:TextBox name="description" ui:field="description"/>
+                    <g:TextBox ui:field="description"/>
                 </g:HorizontalPanel>
                 <g:HorizontalPanel>
                     <g:Button ui:field="btnSubmit">Создать</g:Button>

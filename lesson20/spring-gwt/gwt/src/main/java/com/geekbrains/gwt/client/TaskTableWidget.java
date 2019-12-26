@@ -5,7 +5,6 @@ import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.storage.client.Storage;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -14,12 +13,14 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;
 import java.util.List;
+
+import static com.geekbrains.gwt.client.Utils.getToken;
 
 public class TaskTableWidget extends Composite {
     @UiField
@@ -33,9 +34,10 @@ public class TaskTableWidget extends Composite {
 
     private static TaskTableBinder uiBinder = GWT.create(TaskTableBinder.class);
 
-    public TaskTableWidget() {
+    public TaskTableWidget(TabLayoutPanel tabPanel, ViewTaskForm viewTaskForm) {
         TaskTableWidget taskTableWidget = this;
         initWidget(uiBinder.createAndBindUi(taskTableWidget));
+        viewTaskForm.setTaskTableWidget(taskTableWidget);
 
         TextColumn<TaskDto> idColumn = new TextColumn<TaskDto>() {
             @Override
@@ -53,21 +55,21 @@ public class TaskTableWidget extends Composite {
         };
         table.addColumn(nameColumn, "name");
 
-        TextColumn<TaskDto> authorColumn = new TextColumn<TaskDto>() {
-            @Override
-            public String getValue(TaskDto taskDto) {
-                return taskDto.getAuthor();
-            }
-        };
-        table.addColumn(authorColumn, "author");
-
         TextColumn<TaskDto> executerColumn = new TextColumn<TaskDto>() {
             @Override
             public String getValue(TaskDto taskDto) {
-                return taskDto.getExecutor();
+                return taskDto.getExecutorDto().getUserName();
             }
         };
         table.addColumn(executerColumn, "executer");
+
+        TextColumn<TaskDto> authorColumn = new TextColumn<TaskDto>() {
+            @Override
+            public String getValue(TaskDto taskDto) {
+                return taskDto.getAuthorDto().getUserName();
+            }
+        };
+        table.addColumn(authorColumn, "author");
 
         TextColumn<TaskDto> descriptionColumn = new TextColumn<TaskDto>() {
             @Override
@@ -80,7 +82,7 @@ public class TaskTableWidget extends Composite {
         TextColumn<TaskDto> status = new TextColumn<TaskDto>() {
             @Override
             public String getValue(TaskDto taskDto) {
-                return taskDto.getStatus();
+                return taskDto.getStatusDto().getRusTitle();
             }
         };
         table.addColumn(status, "status");
@@ -91,7 +93,9 @@ public class TaskTableWidget extends Composite {
                 new ActionCell<TaskDto>("Открыть задачу", new ActionCell.Delegate<TaskDto>() {
                     @Override
                     public void execute(TaskDto task) {
-                        EditTaskDialogWidget editTaskDialogWidget = new EditTaskDialogWidget(taskTableWidget, task.getId());
+                        viewTaskForm.setTaskId(task.getId());
+                        viewTaskForm.refresh();
+                        tabPanel.selectTab(2);
                     }
                 })) {
             @Override
@@ -100,19 +104,15 @@ public class TaskTableWidget extends Composite {
             }
         };
 
-        table.addColumn(viewTask, "Редактировать");
+        table.addColumn(viewTask, "Просмотр");
 
         table.setColumnWidth(idColumn, 100, Style.Unit.PX);
         table.setColumnWidth(nameColumn, 400, Style.Unit.PX);
         table.setColumnWidth(viewTask, 200, Style.Unit.PX);
-
-        refresh();
     }
 
     public void refresh() {
-        String token = Storage.getLocalStorageIfSupported().getItem("jwt");
-        GWT.log("STORAGE: " + token);
-        client.getAllTasks(token, null, null, null, new MethodCallback<List<TaskDto>>() {
+        client.getAllTasks(getToken(), null, null, null, new MethodCallback<List<TaskDto>>() {
             @Override
             public void onFailure(Method method, Throwable throwable) {
                 GWT.log(throwable.toString());

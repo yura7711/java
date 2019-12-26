@@ -1,6 +1,5 @@
 package com.geekbrains.gwt.client;
 
-import com.geekbrains.gwt.common.StatusDto;
 import com.geekbrains.gwt.common.TaskAddDto;
 import com.geekbrains.gwt.common.TaskDto;
 import com.geekbrains.gwt.common.UserDto;
@@ -22,18 +21,12 @@ public interface TasksClient extends RestService {
 
     @GET
     @Path("/{id}")
-    void getTask(@HeaderParam("Authorization") String token, @PathParam("id") String id, MethodCallback<TaskAddDto> result);
+    void getTask(@HeaderParam("Authorization") String token, @PathParam("id") String id, MethodCallback<TaskDto> result);
 
     @GET
     @Path("/statuses")
     void getStatuses(@HeaderParam("Authorization") String token
-            ,MethodCallback<List<StatusDto>> statuses
-    );
-
-    @GET
-    @Path("/users")
-    void getUsers(@HeaderParam("Authorization") String token
-            ,MethodCallback<List<UserDto>> statuses
+            ,MethodCallback<List<TaskDto.StatusDto>> statuses
     );
 
     @DELETE
@@ -45,4 +38,8 @@ public interface TasksClient extends RestService {
     @POST
     @Path("/add")
     void createTask(@HeaderParam("Authorization") String token, @BeanParam() TaskAddDto taskAddDto, MethodCallback<Void> result);
+
+    @POST
+    @Path("/update")
+    void updateTask(@HeaderParam("Authorization") String token, @BeanParam() TaskAddDto taskAddDto, MethodCallback<Void> result);
 }

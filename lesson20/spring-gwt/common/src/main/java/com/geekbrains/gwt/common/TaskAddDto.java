@@ -1,10 +1,15 @@
 package com.geekbrains.gwt.common;
 
+import javax.validation.constraints.Size;
+
 public class TaskAddDto {
     private Long id;
+    @Size(min = 3, message = "Название должно содержать минимум 3 символа")
     private String name;
     private Long author_id;
     private Long executor_id;
+
+    @Size(min = 10, message = "Описание должно содержать минимум 10 символов")
     private String description;
 
     public TaskAddDto() {

@@ -30,15 +30,17 @@ public class LoginForm extends Composite {
     }
 
     private TaskTableWidget taskTableWidget;
+    private FilterTaskFormWidget filterTaskFormWidget;
     private TabLayoutPanel tabPanel;
 
     private static LoginFormBinder uiBinder = GWT.create(LoginFormBinder.class);
 
-    public LoginForm(TabLayoutPanel tabPanel, TaskTableWidget taskTableWidget) {
+    public LoginForm(TabLayoutPanel tabPanel, TaskTableWidget taskTableWidget, FilterTaskFormWidget filterTaskFormWidget) {
         this.initWidget(uiBinder.createAndBindUi(this));
         this.form.setAction(Defaults.getServiceRoot().concat("items"));
         this.taskTableWidget = taskTableWidget;
         this.tabPanel = tabPanel;
+        this.filterTaskFormWidget = filterTaskFormWidget;
     }
 
     @UiHandler("form")
@@ -63,8 +65,9 @@ public class LoginForm extends Composite {
             @Override
             public void onSuccess(Method method, JwtAuthResponseDto jwtAuthResponseDto) {
                 GWT.log(jwtAuthResponseDto.getToken());
-                Storage.getLocalStorageIfSupported().setItem("jwt", "Bearer " +  jwtAuthResponseDto.getToken());
+                Utils.saveToken(jwtAuthResponseDto.getToken());
                 taskTableWidget.refresh();
+                filterTaskFormWidget.refresh();
                 tabPanel.selectTab(1);
             }
         });

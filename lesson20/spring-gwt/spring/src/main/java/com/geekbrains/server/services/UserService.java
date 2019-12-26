@@ -2,6 +2,7 @@ package com.geekbrains.server.services;
 
 import com.geekbrains.gwt.common.UserDto;
 import com.geekbrains.server.entities.User;
+import com.geekbrains.server.mappers.UserMapper;
 import com.geekbrains.server.repositories.RoleRepository;
 import com.geekbrains.server.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,16 +35,16 @@ public class UserService implements UserDetailsService {
         this.roleRepository = roleRepository;
     }
 
-    public List<User> getAllUsers() {
-        return (List<User>)userRepository.findAll();
+    public List<UserDto> getAllUsers() {
+        return UserMapper.MAPPER.fromUserList(userRepository.findAll());
     }
 
-    public User getUserById(Long userId) {
-        return userRepository.findById(userId).get();
+    public UserDto getUserById(Long userId) {
+        return UserMapper.MAPPER.fromUser(userRepository.findById(userId).get());
     }
 
-    public User findOneByUserLogin(String userLogin){
-        return userRepository.findOneByUserLogin(userLogin);
+    public UserDto findOneByUserLogin(String userLogin) {
+        return UserMapper.MAPPER.fromUser(userRepository.findOneByUserLogin(userLogin));
     }
 
     @Autowired
@@ -62,10 +63,10 @@ public class UserService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getUserLogin(), user.getUserPassword(), authorities);
     }
 
-    public User save(UserDto userDto) {
-        User newUser = new User();
+    public UserDto save(UserDto userDto) {
+        User newUser = UserMapper.MAPPER.toUser(userDto);
         newUser.setUserLogin(userDto.getUserLogin());
         newUser.setUserPassword(bcryptEncoder.encode(userDto.getUserPassword()));
-        return userRepository.save(newUser);
+        return UserMapper.MAPPER.fromUser(userRepository.save(newUser));
     }
 }

@@ -6,11 +6,11 @@
             <g:VerticalPanel spacing="10">
                 <g:HorizontalPanel>
                     <g:Label text="Userlogin:" width="100px"/>
-                    <g:TextBox name="userlogin" ui:field="textUserlogin" width="200px"/>
+                    <g:TextBox ui:field="textUserlogin" width="200px"/>
                 </g:HorizontalPanel>
                 <g:HorizontalPanel>
                     <g:Label text="Password:" width="100px"/>
-                    <g:TextBox name="password" ui:field="textPassword" width="200px"/>
+                    <g:PasswordTextBox ui:field="textPassword" width="200px"/>
                 </g:HorizontalPanel>
                 <g:Button ui:field="btnSubmit">Войти</g:Button>
             </g:VerticalPanel>

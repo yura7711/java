@@ -1,6 +1,7 @@
 package com.geekbrains.gwt.client;
 
 import com.geekbrains.gwt.common.TaskAddDto;
+import com.geekbrains.gwt.common.TaskDto;
 import com.geekbrains.gwt.common.UserDto;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -15,6 +16,8 @@ import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;
 
 import java.util.List;
+
+import static com.geekbrains.gwt.client.Utils.getToken;
 
 public class EditTaskDialogWidget extends Composite {
     @UiField
@@ -32,9 +35,10 @@ public class EditTaskDialogWidget extends Composite {
     @UiField
     TextBox description;
 
-    private TaskTableWidget taskTableWidget;
+    private ViewTaskForm viewTaskForm;
     private TasksClient client;
-    private TaskAddDto taskAddDto;
+    private UserClient userClient;
+    private TaskDto taskDto;
     private Long taskId;
 
     @UiTemplate("EditTaskDialog.ui.xml")
@@ -43,22 +47,23 @@ public class EditTaskDialogWidget extends Composite {
 
     private static EditTaskDialogWidget.AddTaskDialogBinder uiBinder = GWT.create(EditTaskDialogWidget.AddTaskDialogBinder.class);
 
-    public EditTaskDialogWidget(TaskTableWidget taskTableWidget, Long taskId) {
+    public EditTaskDialogWidget(ViewTaskForm viewTaskForm, Long taskId) {
         this.initWidget(uiBinder.createAndBindUi(this));
-        this.taskTableWidget = taskTableWidget;
+        this.viewTaskForm = viewTaskForm;
         this.taskId = taskId;
 
         client = GWT.create(TasksClient.class);
-
-        client.getTask(Storage.getLocalStorageIfSupported().getItem("jwt"), taskId.toString(), new MethodCallback<TaskAddDto>() {
+        userClient = GWT.create(UserClient.class);
+        GWT.log("taskId="+taskId.toString());
+        client.getTask(getToken(), taskId.toString(), new MethodCallback<TaskDto>() {
             @Override
             public void onFailure(Method method, Throwable throwable) {
                 Window.alert("Невозможно получить параметры задачи: " + throwable.getMessage());
             }
 
             @Override
-            public void onSuccess(Method method, TaskAddDto i) {
-                taskAddDto = i;
+            public void onSuccess(Method method, TaskDto i) {
+                taskDto = i;
                 getUsers();
 
                 dialog.center();
@@ -68,7 +73,7 @@ public class EditTaskDialogWidget extends Composite {
     }
 
     public void getUsers() {
-        client.getUsers(Storage.getLocalStorageIfSupported().getItem("jwt"), new MethodCallback<List<UserDto>>() {
+        userClient.getUsers(getToken(), new MethodCallback<List<UserDto>>() {
             @Override
             public void onFailure(Method method, Throwable throwable) {
                 Window.alert("Невозможно получить список пользователей: " + throwable.getMessage());
@@ -81,16 +86,16 @@ public class EditTaskDialogWidget extends Composite {
                     executor_id.addItem(o.getUserName(), o.getUserId().toString());
                     author_id.addItem(o.getUserName(), o.getUserId().toString());
 
-                    if (o.getUserId().equals(taskAddDto.getAuthor_id())){
+                    if (o.getUserId().equals(taskDto.getAuthorDto().getUserId())){
                         author_id.setItemSelected(author_id.getItemCount()-1, true);
                     }
-                    if (o.getUserId().equals(taskAddDto.getExecutor_id())){
+                    if (o.getUserId().equals(taskDto.getExecutorDto().getUserId())){
                         executor_id.setItemSelected(executor_id.getItemCount()-1, true);
                     }
                 }
 
-                name.setText(taskAddDto.getName());
-                description.setText(taskAddDto.getDescription());
+                name.setText(taskDto.getName());
+                description.setText(taskDto.getDescription());
             }
         });
     }
@@ -98,7 +103,7 @@ public class EditTaskDialogWidget extends Composite {
     @UiHandler("btnSubmit")
     public void submitClick(ClickEvent event) {
         TaskAddDto taskDto = new TaskAddDto(taskId, name.getText(), Long.parseLong(author_id.getSelectedValue()), Long.parseLong(executor_id.getSelectedValue()), description.getText());
-        client.createTask(Storage.getLocalStorageIfSupported().getItem("jwt"), taskDto, new MethodCallback<Void>() {
+        client.updateTask(getToken(), taskDto, new MethodCallback<Void>() {
             @Override
             public void onFailure(Method method, Throwable throwable) {
                 Window.alert("Ошибка при изменении задачи");
@@ -107,7 +112,8 @@ public class EditTaskDialogWidget extends Composite {
             @Override
             public void onSuccess(Method method, Void aVoid) {
                 dialog.hide();
-                taskTableWidget.refresh();
+                viewTaskForm.setTaskId(taskId);
+                viewTaskForm.refresh();
             }
         });
     }
@@ -119,7 +125,7 @@ public class EditTaskDialogWidget extends Composite {
 
     @UiHandler("btnRemove")
     public void submitRemove(ClickEvent event) {
-        client.removeTask(Storage.getLocalStorageIfSupported().getItem("jwt"), taskId.toString(), new MethodCallback<Void>() {
+        client.removeTask(getToken(), taskId.toString(), new MethodCallback<Void>() {
             @Override
             public void onFailure(Method method, Throwable throwable) {
                 GWT.log(throwable.toString());
@@ -128,7 +134,8 @@ public class EditTaskDialogWidget extends Composite {
 
             @Override
             public void onSuccess(Method method, Void result) {
-                taskTableWidget.refresh();
+                viewTaskForm.setTaskId(taskId);
+                viewTaskForm.refresh();
                 dialog.hide();
             }
         });

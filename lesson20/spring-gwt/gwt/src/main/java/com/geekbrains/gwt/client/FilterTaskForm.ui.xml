@@ -2,28 +2,26 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
     <g:DecoratorPanel>
-        <g:FormPanel ui:field="filter" method="GET">
-            <g:VerticalPanel spacing="10">
-                <g:HorizontalPanel>
-                    <g:Label text="Cтатус:" width="100px"/>
-                    <g:ListBox name="statusId" ui:field="statusId">
-                        <g:item value="">Все</g:item>
-                    </g:ListBox>
-                </g:HorizontalPanel>
-                <g:HorizontalPanel>
-                    <g:Label text="Исполнитель:" width="100px"/>
-                    <g:ListBox name="executer_id" ui:field="executer_id">
-                        <g:item value="">Все</g:item>
-                    </g:ListBox>
-                </g:HorizontalPanel>
-                <g:HorizontalPanel>
-                    <g:Label text="Автор:" width="100px"/>
-                    <g:ListBox name="author_id" ui:field="author_id">
-                        <g:item value="">Все</g:item>
-                    </g:ListBox>
-                </g:HorizontalPanel>
-                <g:Button ui:field="btnSubmit">Применить</g:Button>
-            </g:VerticalPanel>
-        </g:FormPanel>
+        <g:VerticalPanel spacing="10">
+            <g:HorizontalPanel>
+                <g:Label text="Cтатус:" width="100px"/>
+                <g:ListBox ui:field="statusId">
+                    <g:item value="">Все</g:item>
+                </g:ListBox>
+            </g:HorizontalPanel>
+            <g:HorizontalPanel>
+                <g:Label text="Исполнитель:" width="100px"/>
+                <g:ListBox ui:field="executer_id">
+                    <g:item value="">Все</g:item>
+                </g:ListBox>
+            </g:HorizontalPanel>
+            <g:HorizontalPanel>
+                <g:Label text="Автор:" width="100px"/>
+                <g:ListBox ui:field="author_id">
+                    <g:item value="">Все</g:item>
+                </g:ListBox>
+            </g:HorizontalPanel>
+            <g:Button ui:field="btnSubmit">Применить</g:Button>
+        </g:VerticalPanel>
     </g:DecoratorPanel>
 </ui:UiBinder>

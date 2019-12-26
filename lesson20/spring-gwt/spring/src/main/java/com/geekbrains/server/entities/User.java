@@ -5,6 +5,7 @@ import com.geekbrains.gwt.common.UserDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.jws.soap.SOAPBinding;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
@@ -27,30 +28,57 @@ public class User {
     @Column(name="user_password")
     private String userPassword;
 
-    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
-    @JsonBackReference
-    private List<Task> tasksFromMe;
-
-    @OneToMany(mappedBy = "executor", fetch = FetchType.LAZY)
-    @JsonBackReference
-    private List<Task> tasksForMe;
-
     @ManyToMany
     @JoinTable(name = "users_link_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Collection<Role> roles;
 
+    public User() {
+    }
+
     public User(UserDto userDto) {
         this.userId = userDto.getUserId();
         this.userName = userDto.getUserName();
     }
 
-    public List<Task> getTasksFromMe() {
-        return tasksFromMe;
+    public Collection<Role> getRoles() {
+        return roles;
     }
 
-    public List<Task> getTasksForMe() {
-        return tasksForMe;
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserLogin() {
+        return userLogin;
+    }
+
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
+    }
+
+    public String getUserPassword() {
+        return userPassword;
+    }
+
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 }

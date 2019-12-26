@@ -16,6 +16,8 @@ import org.fusesource.restygwt.client.MethodCallback;
 
 import java.util.List;
 
+import static com.geekbrains.gwt.client.Utils.getToken;
+
 public class AddTaskDialogWidget extends Composite {
     @UiField
     DialogBox dialog;
@@ -31,6 +33,7 @@ public class AddTaskDialogWidget extends Composite {
 
     private TaskTableWidget taskTableWidget;
     private TasksClient client;
+    private UserClient userClient;
 
     @UiTemplate("AddTaskDialog.ui.xml")
     interface AddTaskDialogBinder extends UiBinder<Widget, AddTaskDialogWidget> {
@@ -46,8 +49,9 @@ public class AddTaskDialogWidget extends Composite {
         dialog.show();
 
         client = GWT.create(TasksClient.class);
+        userClient = GWT.create(UserClient.class);
 
-        client.getUsers(Storage.getLocalStorageIfSupported().getItem("jwt"), new MethodCallback<List<UserDto>>() {
+        userClient.getUsers(getToken(), new MethodCallback<List<UserDto>>() {
             @Override
             public void onFailure(Method method, Throwable throwable) {
                 GWT.log(throwable.toString());
@@ -57,7 +61,6 @@ public class AddTaskDialogWidget extends Composite {
 
             @Override
             public void onSuccess(Method method, List<UserDto> i) {
-                GWT.log("Received " + i.size() + " users");
                 for (UserDto o: i) {
                     executor_id.addItem(o.getUserName(), o.getUserId().toString());
                 }
@@ -68,10 +71,10 @@ public class AddTaskDialogWidget extends Composite {
     @UiHandler("btnSubmit")
     public void submitClick(ClickEvent event) {
         TaskAddDto taskDto = new TaskAddDto(null, name.getText(), null, Long.parseLong(executor_id.getSelectedValue()), description.getText());
-        client.createTask(Storage.getLocalStorageIfSupported().getItem("jwt"), taskDto, new MethodCallback<Void>() {
+        client.createTask(getToken(), taskDto, new MethodCallback<Void>() {
             @Override
             public void onFailure(Method method, Throwable throwable) {
-                Window.alert("Ошибка при добавлении задачи");
+                Window.alert("Ошибка при добавлении задачи: " + method.getResponse().getText());
             }
 
             @Override
